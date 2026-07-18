@@ -5,7 +5,7 @@
     "n_ovulatory_cycles": 65,
     "n_participants": 42
   },
-  "git_commit": "ba25b93ddda1186189f83e62da1fff67573ca9e2",
+  "git_commit": "cdde1c9e9c943209c017e8c82edc7abc373023e6",
   "integrity_status": "OK",
   "metrics": [
     {
@@ -258,5 +258,5 @@
     "scheme": "RepeatedStratifiedGroupKFold"
   },
   "tier": "B",
-  "wall_clock_s": 0.43
+  "wall_clock_s": 0.27
 }

@@ -2,39 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* INFRADIAN design system — "scientific instrument", dark-first.
-   The only saturated colour on screen is DATA. Chrome is ink-on-surface. */
+/* INFRADIAN design system.
+   Typography + surface language modeled on PolyAI: a warm near-black canvas, a single
+   high-chroma lime accent reserved for action, fully-rounded pill controls, medium-weight
+   headings with tight negative tracking, and generous whitespace.
+   Data series keep their own hues and are deliberately distinct from the lime accent. */
 
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "IBM Plex Mono", monospace;
+  /* type */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
 
-  /* dark = the instrument (default) */
-  --bg-base: #0b0e12;
-  --bg-surface: #14181e;
-  --bg-raised: #1b212a;
-  --border-hair: rgba(255, 255, 255, 0.09);
-  --border-strong: #2a323d;
-  --ink-primary: #f2f5f8;
-  --ink-secondary: #a9b2c0;
-  --ink-muted: #8b93a0;
-  --grid: #232932;
-  --axis: #333b47;
+  /* canvas — warm near-black (not blue-tinted) */
+  --bg-base: #151213;
+  --bg-surface: #1c1a1b;
+  --bg-raised: #262626;
 
-  --s-e3g: #3987e5;
-  --s-pdg: #199e70;
-  --s-lh: #d95926;
-  --calendar: #8a93a1;
-  --truth: #f2f5f8;
+  --border-hair: rgba(255, 255, 255, 0.08);
+  --border-strong: #3d3d3d;
 
-  --good: #0ca30c;
-  --warning: #fab219;
-  --critical: #d03b3b;
+  --ink-primary: #ffffff;
+  --ink-secondary: #c9c7c8;
+  --ink-muted: #888888;
+
+  /* the single accent — reserved for action + emphasis */
+  --accent: #d9ee50;
+  --accent-ink: #231f20;
+  --accent-dim: rgba(217, 238, 80, 0.14);
+
+  --grid: #262324;
+  --axis: #3d3d3d;
+
+  /* data series — chosen to stay distinct from the lime accent on this canvas */
+  --s-e3g: #6ba6ff;
+  --s-pdg: #3ddbc6;
+  --s-lh: #ff8a5b;
+  --calendar: #888888;
+  --truth: #ffffff;
+
+  --good: #d9ee50;
+  --warning: #f5c451;
+  --critical: #ff6b6b;
 }
 
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   margin: 0;
@@ -43,6 +57,23 @@ body {
   color: var(--ink-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* PolyAI-style display headings: medium weight, tight tracking, tight leading */
+.display {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+}
+.heading {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
 }
 
 .mono {
@@ -51,14 +82,57 @@ body {
 }
 
 .eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-muted);
+}
+
+/* fully-rounded pill controls */
+.pill {
+  border-radius: 999px;
+  padding: 0.6rem 1.15rem;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 160ms cubic-bezier(0.2, 0, 0, 1);
+  white-space: nowrap;
+}
+.pill-accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+}
+.pill-accent:hover {
+  filter: brightness(1.07);
+}
+.pill-ghost {
+  background: transparent;
+  color: var(--ink-primary);
+  border: 1px solid var(--border-strong);
+}
+.pill-ghost:hover {
+  border-color: var(--ink-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+.pill-on {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(217, 238, 80, 0.45);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 20px;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
 }

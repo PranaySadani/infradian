@@ -17,6 +17,21 @@ npx vercel@latest --prod          # first run prompts login + links the project
 #     set Root Directory = web  (vercel.json handles build + output)
 ```
 
+**Point the frontend at a hosted backend** (optional — every view works without it):
+```bash
+# set in the Vercel project's Environment Variables, then redeploy
+NEXT_PUBLIC_API_URL=https://<your-hf-space>.hf.space
+```
+Left unset it defaults to `http://localhost:8000`, so the header shows "API offline" in
+production and the live-inference panel explains why. Nothing else is affected — all charts,
+metrics and explanations are static JSON baked in at build time.
+
+### Run the whole stack locally
+```bash
+make serve                                  # FastAPI on :8000  (header flips to "API live")
+cd web && npm run build && npx serve out -l 3210
+```
+
 ## 3. Dataset + model → HuggingFace
 ```bash
 pip install huggingface_hub

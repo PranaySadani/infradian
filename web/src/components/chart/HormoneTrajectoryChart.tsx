@@ -102,8 +102,15 @@ export function HormoneTrajectoryChart({ data, layers }: Props) {
                     />
                   )
                 )}
-              <text x={0} y={-1} className="eyebrow" fill="var(--ink-muted)">
-                {p.label} <tspan fill="var(--ink-muted)">· {p.unit}</tspan>
+              <text
+                x={0}
+                y={-2}
+                fontSize={11}
+                fontWeight={500}
+                letterSpacing="0.06em"
+                fill="var(--ink-muted)"
+              >
+                {p.label.toUpperCase()} <tspan fill="var(--ink-muted)">· {p.unit}</tspan>
               </text>
               <rect
                 x={0}
@@ -170,7 +177,7 @@ function OvulationEventRail({
 }) {
   return (
     <g transform={`translate(${offsetX},${y})`}>
-      <text x={0} y={8} className="eyebrow" fill="var(--ink-muted)">
+      <text x={0} y={8} fontSize={11} fontWeight={500} letterSpacing="0.06em" fill="var(--ink-muted)">
         ovulation
       </text>
       {events.map((e, i) => {
@@ -218,7 +225,7 @@ function CycleRail({
 }) {
   return (
     <g transform={`translate(${offsetX},${y})`}>
-      <text x={0} y={8} className="eyebrow" fill="var(--ink-muted)">
+      <text x={0} y={8} fontSize={11} fontWeight={500} letterSpacing="0.06em" fill="var(--ink-muted)">
         cycles
       </text>
       {cycles.map((c) => {
