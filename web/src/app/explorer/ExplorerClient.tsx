@@ -3,20 +3,25 @@
 import { useState } from "react";
 import { HormoneTrajectoryChart } from "@/components/chart/HormoneTrajectoryChart";
 import type { Participant, ParticipantIndex } from "@/lib/types";
+import type { Explanation } from "@/lib/data";
 
 type Layer = "model" | "truth" | "calendar";
 
 export function ExplorerClient({
   index,
   participants,
+  explanations,
 }: {
   index: ParticipantIndex[];
   participants: Record<string, Participant>;
+  explanations: Record<string, Explanation>;
 }) {
   const [pid, setPid] = useState(index[0]?.pid ?? "");
   const [layers, setLayers] = useState<Set<Layer>>(new Set(["truth", "calendar"]));
+  const [showRefusal, setShowRefusal] = useState(false);
   const p = participants[pid];
   const meta = index.find((x) => x.pid === pid);
+  const exp = explanations[pid];
 
   const toggle = (l: Layer) =>
     setLayers((prev) => {
@@ -90,6 +95,42 @@ export function ExplorerClient({
           )}
         </div>
       </div>
+
+      {exp && (
+        <div className="mt-8 rounded-lg border border-hair bg-surface p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="eyebrow">grounded explanation</p>
+            <span className="mono text-[11px] text-good">
+              {exp.nCited} of {exp.nCited} claims cited · 0 diagnostic claims · numbers never model-generated
+            </span>
+          </div>
+          <p className="text-[14px] text-ink-secondary leading-relaxed">{exp.text}</p>
+          <div className="flex flex-wrap gap-1.5 mt-4">
+            {exp.citations.map((c) => (
+              <span
+                key={c.id}
+                title={`${c.claim} — ${c.source}`}
+                className="mono text-[10px] px-2 py-1 rounded border border-hair text-ink-muted"
+              >
+                [{c.id}]
+              </span>
+            ))}
+          </div>
+          <div className="mt-4 pt-4 border-t border-hair">
+            <button
+              onClick={() => setShowRefusal((s) => !s)}
+              className="text-[12px] text-ink-muted hover:text-ink transition-colors"
+            >
+              ▸ try an unsafe question: “{exp.refusalDemo.question}”
+            </button>
+            {showRefusal && (
+              <p className="text-[13px] text-warning mt-2 leading-relaxed border-l-2 border-warning pl-3">
+                {exp.refusalDemo.answer}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

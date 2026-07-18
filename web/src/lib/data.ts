@@ -26,3 +26,15 @@ export function skill(): { strata: SkillStratum[] } {
 export function leaderboard(): LeaderboardRow[] {
   return read<LeaderboardRow[]>("leaderboard.json");
 }
+
+export interface Explanation {
+  text: string;
+  source: string;
+  citations: { id: string; claim: string; source: string }[];
+  nCited: number;
+  refusalDemo: { question: string; answer: string };
+}
+
+export function explanations(): Record<string, Explanation> {
+  return read<Record<string, Explanation>>("explanations.json");
+}

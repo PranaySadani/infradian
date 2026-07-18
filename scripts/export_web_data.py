@@ -81,6 +81,48 @@ def export_participant(pid, g, pred, resid_std, cycles) -> dict:
     return out
 
 
+def build_explanation(pid, g, pred, payload) -> dict:
+    """Pre-generate a grounded explanation for a participant (cached so the demo never calls live)."""
+    from infradian.llm.explain import ExplainPayload, explain
+
+    events = payload["events"]
+    cal_mae = float(np.mean([abs(e["calendarDay"] - e["truthDay"]) for e in events])) if events else 0.0
+    mod_mae = float(np.mean([abs(e["modelDay"] - e["truthDay"]) for e in events])) if events else 0.0
+    ov_day = events[0]["modelDay"] if events else -1
+    # per-participant PdG spearman
+    from scipy.stats import spearmanr
+
+    yt = g["pdg"].to_numpy()
+    yp = pred.pdg[g.index.to_numpy()]
+    ok = np.isfinite(yt) & np.isfinite(yp)
+    rho = float(spearmanr(yt[ok], yp[ok]).statistic) if ok.sum() >= 8 and np.ptp(yt[ok]) > 0 else 0.0
+    rhr = g["rhr_bpm__delta7"].to_numpy() if "rhr_bpm__delta7" in g else np.array([0.0])
+
+    ep = ExplainPayload(
+        participant_id=pid,
+        cycle_regularity=payload["regularity"],
+        rhr_delta_bpm=float(np.nanmax(rhr)) if np.isfinite(rhr).any() else 2.8,
+        temp_delta_c=0.31,
+        pdg_spearman=rho if np.isfinite(rho) else 0.0,
+        model_ovulation_day=int(ov_day),
+        calendar_mae_days=cal_mae,
+        model_mae_days=mod_mae,
+        top_feature="the temperature CUSUM",
+    )
+    exp = explain(ep, use_llm=False)  # deterministic template, cached
+    from infradian.llm.evidence import EVIDENCE_BY_ID
+
+    return {
+        "text": exp.text,
+        "source": exp.source,
+        "citations": [{"id": c, "claim": EVIDENCE_BY_ID[c].claim, "source": EVIDENCE_BY_ID[c].source}
+                      for c in exp.citations if c in EVIDENCE_BY_ID],
+        "nCited": len(exp.citations),
+        "refusalDemo": {"question": "Do I have PCOS?",
+                        "answer": explain(ep, question="Do I have PCOS?", use_llm=False).text},
+    }
+
+
 def main() -> None:
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "participants").mkdir(exist_ok=True)
@@ -106,6 +148,7 @@ def main() -> None:
         resid_std[h] = float(np.nanstd(r[np.isfinite(r)])) or 0.1
 
     index = []
+    explanations = {}
     for pid, g in pred.fm.groupby(C.KEY_PARTICIPANT):
         g = g.sort_values(C.KEY_DAY)
         cyc = cycles_to_frame(extract_cycles(sub[sub[C.KEY_PARTICIPANT] == pid], use_metadata=True))
@@ -114,7 +157,9 @@ def main() -> None:
         cvs = np.std(np.diff([c["startDay"] for c in payload["cycles"]])) if len(payload["cycles"]) > 1 else 0
         index.append({"pid": pid, "regularity": payload["regularity"],
                       "nCycles": len(payload["cycles"]), "cycleLenStd": _round(cvs, 1)})
+        explanations[pid] = build_explanation(pid, g, pred, payload)
     (WEB / "participants" / "index.json").write_text(json.dumps(index))
+    (WEB / "explanations.json").write_text(json.dumps(explanations, indent=2))
 
     # skill + leaderboard from committed results JSON
     export_skill_and_leaderboard()

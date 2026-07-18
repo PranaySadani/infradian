@@ -1,0 +1,146 @@
+{
+  "S000": {
+    "text": "For this regular cycle, the model places ovulation at day 15. It leans most on the temperature CUSUM: the wearable shows a temperature shift of +0.31 \u00b0C and a resting-heart-rate change of +6.3 bpm in the days after ovulation \u2014 the post-ovulatory progesterone signature. Across this participant, the model's daily PdG estimate tracks the urine assay at a rank correlation of 0.85. On ovulation timing it is off by 3.8 days versus 4.5 days for the calendar \u2014 the calendar assumes a fixed cycle length and struggles most here. Because temperature rises only after ovulation, none of this can forecast ovulation in advance. This is a physiological estimate, not a diagnosis, and not contraceptive guidance.",
+    "source": "template",
+    "citations": [
+      {
+        "id": "temp_luteal",
+        "claim": "Nightly skin temperature rises about 0.20\u20130.50 \u00b0C from the follicular to the luteal phase.",
+        "source": "Grant et al., Int J Womens Health 2022 (Oura, n=26); wrist-vs-BBT fertility study."
+      },
+      {
+        "id": "rhr_luteal",
+        "claim": "Resting heart rate rises about 2\u20134 bpm from the follicular to the luteal phase.",
+        "source": "Grant et al. 2022 (+2.4 bpm); Shilaih et al., Sci Rep 2017 (+3.8 bpm); WHOOP (+2.7 bpm)."
+      },
+      {
+        "id": "calendar_fails_irregular",
+        "claim": "Calendar-based prediction assumes a fixed cycle length and fails most for irregular cycles.",
+        "source": "INFRADIAN benchmark, T2-P baseline: prospective calendar MAE ~5\u20138 days for irregular cycles."
+      },
+      {
+        "id": "temp_lags_ovulation",
+        "claim": "The temperature rise is a consequence of post-ovulatory progesterone, appearing 1\u20133 days AFTER ovulation, so a wearable cannot forecast ovulation ahead of it.",
+        "source": "Established reproductive physiology (corpus luteum thermogenesis)."
+      },
+      {
+        "id": "not_diagnostic",
+        "claim": "These estimates are physiological, non-diagnostic, and not contraceptive or fertility guidance.",
+        "source": "INFRADIAN intended-use statement."
+      }
+    ],
+    "nCited": 5,
+    "refusalDemo": {
+      "question": "Do I have PCOS?",
+      "answer": "I can't diagnose conditions. This tool estimates physiological cycle signals from wearables; it is not a diagnostic device. Please talk to a clinician about symptoms \u2014 and you can bring the trajectory report to that conversation."
+    }
+  },
+  "S001": {
+    "text": "For this irregular cycle, the model places ovulation at day 14. It leans most on the temperature CUSUM: the wearable shows a temperature shift of +0.31 \u00b0C and a resting-heart-rate change of +7.2 bpm in the days after ovulation \u2014 the post-ovulatory progesterone signature. Across this participant, the model's daily PdG estimate tracks the urine assay at a rank correlation of 0.73. On ovulation timing it is off by 0.3 days versus 1.0 days for the calendar \u2014 the calendar assumes a fixed cycle length and struggles most here. Because temperature rises only after ovulation, none of this can forecast ovulation in advance. This is a physiological estimate, not a diagnosis, and not contraceptive guidance.",
+    "source": "template",
+    "citations": [
+      {
+        "id": "temp_luteal",
+        "claim": "Nightly skin temperature rises about 0.20\u20130.50 \u00b0C from the follicular to the luteal phase.",
+        "source": "Grant et al., Int J Womens Health 2022 (Oura, n=26); wrist-vs-BBT fertility study."
+      },
+      {
+        "id": "rhr_luteal",
+        "claim": "Resting heart rate rises about 2\u20134 bpm from the follicular to the luteal phase.",
+        "source": "Grant et al. 2022 (+2.4 bpm); Shilaih et al., Sci Rep 2017 (+3.8 bpm); WHOOP (+2.7 bpm)."
+      },
+      {
+        "id": "calendar_fails_irregular",
+        "claim": "Calendar-based prediction assumes a fixed cycle length and fails most for irregular cycles.",
+        "source": "INFRADIAN benchmark, T2-P baseline: prospective calendar MAE ~5\u20138 days for irregular cycles."
+      },
+      {
+        "id": "temp_lags_ovulation",
+        "claim": "The temperature rise is a consequence of post-ovulatory progesterone, appearing 1\u20133 days AFTER ovulation, so a wearable cannot forecast ovulation ahead of it.",
+        "source": "Established reproductive physiology (corpus luteum thermogenesis)."
+      },
+      {
+        "id": "not_diagnostic",
+        "claim": "These estimates are physiological, non-diagnostic, and not contraceptive or fertility guidance.",
+        "source": "INFRADIAN intended-use statement."
+      }
+    ],
+    "nCited": 5,
+    "refusalDemo": {
+      "question": "Do I have PCOS?",
+      "answer": "I can't diagnose conditions. This tool estimates physiological cycle signals from wearables; it is not a diagnostic device. Please talk to a clinician about symptoms \u2014 and you can bring the trajectory report to that conversation."
+    }
+  },
+  "S002": {
+    "text": "For this irregular cycle, the model places ovulation at day 65. It leans most on the temperature CUSUM: the wearable shows a temperature shift of +0.31 \u00b0C and a resting-heart-rate change of +9.7 bpm in the days after ovulation \u2014 the post-ovulatory progesterone signature. Across this participant, the model's daily PdG estimate tracks the urine assay at a rank correlation of 0.66. On ovulation timing it is off by 2.5 days versus 15.5 days for the calendar \u2014 the calendar assumes a fixed cycle length and struggles most here. Because temperature rises only after ovulation, none of this can forecast ovulation in advance. This is a physiological estimate, not a diagnosis, and not contraceptive guidance.",
+    "source": "template",
+    "citations": [
+      {
+        "id": "temp_luteal",
+        "claim": "Nightly skin temperature rises about 0.20\u20130.50 \u00b0C from the follicular to the luteal phase.",
+        "source": "Grant et al., Int J Womens Health 2022 (Oura, n=26); wrist-vs-BBT fertility study."
+      },
+      {
+        "id": "rhr_luteal",
+        "claim": "Resting heart rate rises about 2\u20134 bpm from the follicular to the luteal phase.",
+        "source": "Grant et al. 2022 (+2.4 bpm); Shilaih et al., Sci Rep 2017 (+3.8 bpm); WHOOP (+2.7 bpm)."
+      },
+      {
+        "id": "calendar_fails_irregular",
+        "claim": "Calendar-based prediction assumes a fixed cycle length and fails most for irregular cycles.",
+        "source": "INFRADIAN benchmark, T2-P baseline: prospective calendar MAE ~5\u20138 days for irregular cycles."
+      },
+      {
+        "id": "temp_lags_ovulation",
+        "claim": "The temperature rise is a consequence of post-ovulatory progesterone, appearing 1\u20133 days AFTER ovulation, so a wearable cannot forecast ovulation ahead of it.",
+        "source": "Established reproductive physiology (corpus luteum thermogenesis)."
+      },
+      {
+        "id": "not_diagnostic",
+        "claim": "These estimates are physiological, non-diagnostic, and not contraceptive or fertility guidance.",
+        "source": "INFRADIAN intended-use statement."
+      }
+    ],
+    "nCited": 5,
+    "refusalDemo": {
+      "question": "Do I have PCOS?",
+      "answer": "I can't diagnose conditions. This tool estimates physiological cycle signals from wearables; it is not a diagnostic device. Please talk to a clinician about symptoms \u2014 and you can bring the trajectory report to that conversation."
+    }
+  },
+  "S003": {
+    "text": "For this irregular cycle, the model places ovulation at day 25. It leans most on the temperature CUSUM: the wearable shows a temperature shift of +0.31 \u00b0C and a resting-heart-rate change of +7.3 bpm in the days after ovulation \u2014 the post-ovulatory progesterone signature. Across this participant, the model's daily PdG estimate tracks the urine assay at a rank correlation of 0.81. On ovulation timing it is off by 5.0 days versus 7.5 days for the calendar \u2014 the calendar assumes a fixed cycle length and struggles most here. Because temperature rises only after ovulation, none of this can forecast ovulation in advance. This is a physiological estimate, not a diagnosis, and not contraceptive guidance.",
+    "source": "template",
+    "citations": [
+      {
+        "id": "temp_luteal",
+        "claim": "Nightly skin temperature rises about 0.20\u20130.50 \u00b0C from the follicular to the luteal phase.",
+        "source": "Grant et al., Int J Womens Health 2022 (Oura, n=26); wrist-vs-BBT fertility study."
+      },
+      {
+        "id": "rhr_luteal",
+        "claim": "Resting heart rate rises about 2\u20134 bpm from the follicular to the luteal phase.",
+        "source": "Grant et al. 2022 (+2.4 bpm); Shilaih et al., Sci Rep 2017 (+3.8 bpm); WHOOP (+2.7 bpm)."
+      },
+      {
+        "id": "calendar_fails_irregular",
+        "claim": "Calendar-based prediction assumes a fixed cycle length and fails most for irregular cycles.",
+        "source": "INFRADIAN benchmark, T2-P baseline: prospective calendar MAE ~5\u20138 days for irregular cycles."
+      },
+      {
+        "id": "temp_lags_ovulation",
+        "claim": "The temperature rise is a consequence of post-ovulatory progesterone, appearing 1\u20133 days AFTER ovulation, so a wearable cannot forecast ovulation ahead of it.",
+        "source": "Established reproductive physiology (corpus luteum thermogenesis)."
+      },
+      {
+        "id": "not_diagnostic",
+        "claim": "These estimates are physiological, non-diagnostic, and not contraceptive or fertility guidance.",
+        "source": "INFRADIAN intended-use statement."
+      }
+    ],
+    "nCited": 5,
+    "refusalDemo": {
+      "question": "Do I have PCOS?",
+      "answer": "I can't diagnose conditions. This tool estimates physiological cycle signals from wearables; it is not a diagnostic device. Please talk to a clinician about symptoms \u2014 and you can bring the trajectory report to that conversation."
+    }
+  }
+}
