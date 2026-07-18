@@ -1,0 +1,61 @@
+{
+  "strata": [
+    {
+      "stratum": "all",
+      "synthetic": {
+        "soc": 0.241,
+        "lo": 0.204,
+        "hi": 0.276,
+        "n": 600,
+        "p": 0.0,
+        "primary": false
+      },
+      "real": {
+        "soc": -0.063,
+        "lo": -0.203,
+        "hi": 0.048,
+        "n": 34,
+        "p": 0.608,
+        "primary": false
+      }
+    },
+    {
+      "stratum": "regular",
+      "synthetic": {
+        "soc": 0.048,
+        "lo": 0.015,
+        "hi": 0.079,
+        "n": 423,
+        "p": 0.0225,
+        "primary": false
+      },
+      "real": {
+        "soc": -0.046,
+        "lo": -0.449,
+        "hi": 0.26,
+        "n": 10,
+        "p": 0.9219,
+        "primary": false
+      }
+    },
+    {
+      "stratum": "irregular",
+      "synthetic": {
+        "soc": 0.4,
+        "lo": 0.346,
+        "hi": 0.453,
+        "n": 177,
+        "p": 0.0,
+        "primary": true
+      },
+      "real": {
+        "soc": -0.067,
+        "lo": -0.223,
+        "hi": 0.054,
+        "n": 24,
+        "p": 0.4749,
+        "primary": true
+      }
+    }
+  ]
+}

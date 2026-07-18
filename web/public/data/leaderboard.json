@@ -1,0 +1,56 @@
+[
+  {
+    "task": "T3",
+    "label": "4-phase classification",
+    "metric": "macro_f1",
+    "synthetic": 0.812,
+    "real": 0.458,
+    "transfer": 0.278,
+    "n_real": 5658
+  },
+  {
+    "task": "T2-R",
+    "label": "Ovulation timing (skill over calendar)",
+    "metric": "SoC",
+    "synthetic": 0.241,
+    "real": -0.063,
+    "transfer": -0.351,
+    "n_real": 34
+  },
+  {
+    "task": "T2-A",
+    "label": "Anovulation detection",
+    "metric": "pr_auc",
+    "synthetic": 0.222,
+    "real": 0.326,
+    "transfer": 0.314,
+    "n_real": 90
+  },
+  {
+    "task": "T1-pdg",
+    "label": "PdG reconstruction",
+    "metric": "spearman",
+    "synthetic": 0.88,
+    "real": 0.162,
+    "transfer": 0.076,
+    "n_real": 20
+  },
+  {
+    "task": "T1-e3g",
+    "label": "E3G reconstruction",
+    "metric": "spearman",
+    "synthetic": 0.866,
+    "real": 0.168,
+    "transfer": 0.13,
+    "n_real": 42
+  },
+  {
+    "task": "T1-NC",
+    "label": "Dilution negative control",
+    "metric": "spearman_follicular_only",
+    "synthetic": 0.3,
+    "real": 0.019,
+    "transfer": 0.05,
+    "n_real": 20
+  }
+]

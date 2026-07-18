@@ -1,0 +1,12 @@
+{
+  "tiers": {
+    "open": "NHANES/synthetic",
+    "gated": "mcPHASES",
+    "synthetic": "INFRADIAN-SYNTH-1K"
+  },
+  "real_cohort": {
+    "n": 42,
+    "note": "Canadian, ages 18-29 \u2014 says nothing about menopause/PCOS populations"
+  },
+  "headline": "On real consumer wearables the primary endpoint is null (p=0.48); the sim-to-real gap is the finding."
+}
