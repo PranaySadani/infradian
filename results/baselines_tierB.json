@@ -1,0 +1,262 @@
+{
+  "dataset": {
+    "anovulatory_rate": 0.2777777777777778,
+    "n_cycles": 90,
+    "n_ovulatory_cycles": 65,
+    "n_participants": 42
+  },
+  "git_commit": "7183e29499dab489b1c10eaf1c6207c0afb99f66",
+  "integrity_status": "OK",
+  "metrics": [
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 5.318627450980392
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 2.816666666666667
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 6.361111111111112
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 4.769607843137256
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 2.6083333333333334
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 5.670138888888888
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_retro"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 3.225490196078431
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_retro"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 3.2
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_retro"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 3.2361111111111107
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-P",
+      "value": 5.318627450980392
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-P",
+      "value": 2.816666666666667
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1a_fixed14"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-P",
+      "value": 6.361111111111112
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-P",
+      "value": 4.769607843137256
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-P",
+      "value": 2.6083333333333334
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1b_population"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-P",
+      "value": 5.670138888888888
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_hazard"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-P",
+      "value": 4.769247456814268
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_hazard"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-P",
+      "value": 2.7421519692041865
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "baseline": "b1c_hazard"
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-P",
+      "value": 5.613870576651803
+    }
+  ],
+  "model": "calendar-baselines",
+  "notes": "CP1: calendar baselines only. b1c is the reference denominator for Skill over Calendar.",
+  "prompt_hashes": {},
+  "run_name": "baselines-real",
+  "schema_version": "1.0.0",
+  "seeds": [
+    0,
+    1
+  ],
+  "splits": {
+    "n_repeats": 2,
+    "n_splits": 6,
+    "scheme": "RepeatedStratifiedGroupKFold"
+  },
+  "tier": "B",
+  "wall_clock_s": 0.25
+}

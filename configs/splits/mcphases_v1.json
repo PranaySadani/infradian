@@ -1,0 +1,265 @@
+{
+  "cohort": {
+    "n_participants": 42,
+    "n_segments": 62,
+    "participant_hashes": [
+      "0199ac8b17d0f584",
+      "01b72fcba728492d",
+      "02c17c4750a11ead",
+      "0382c3b8c9e9d97f",
+      "0c1c5e1c1d7c0925",
+      "17abde2a5e2e5871",
+      "1c8bc32bf1ed1f54",
+      "28b24f763c233076",
+      "30e768cd4be2e431",
+      "3a99f5b8ea0d4c2b",
+      "3faf7a5b5284e04a",
+      "42418524ccdb7281",
+      "4dcbbc89355ae149",
+      "5029c6c08fda9a6f",
+      "558b4d43a76f1d5b",
+      "7624107450009c7d",
+      "80e64149dd705d41",
+      "831e4835d4603bdc",
+      "853483e940c4519f",
+      "94dad1644aae835f",
+      "978dd6ecc877faaf",
+      "a1b51770c2843f4b",
+      "a5e3e7650d298220",
+      "aa03ebc0bf08d1fd",
+      "b1e74218ca02c4bf",
+      "b3fcca04868a4afa",
+      "ba58eda45594ae42",
+      "c1d778d4e746353d",
+      "c549d2915082e0f9",
+      "c5abe0e3cbf7059a",
+      "d297267b71c45702",
+      "d74c4891ff2614eb",
+      "dabb4034910c976b",
+      "db12042c741826ef",
+      "db7370812e94f730",
+      "df1605a0fcf57b48",
+      "e514cde0604be291",
+      "e95eb13a40e0de35",
+      "ea90a9fe798dbb36",
+      "f5448539d3aee70d",
+      "f90499fa2ff839f1",
+      "febb713d18e83591"
+    ]
+  },
+  "dataset": {
+    "license": "PhysioNet Restricted Health Data License 1.5.0",
+    "name": "mcPHASES",
+    "physionet_doi": "10.13026/zx6a-2c81",
+    "physionet_version": "1.0.0",
+    "redistributable": false
+  },
+  "hash": "sha256(participant_id + '|' + salt)[:16]",
+  "integrity": {
+    "file_sha256": {
+      "LICENSE.txt": "cb200b484e8da0cc576d401db82b508f2f334a3b95807185f9b123ec15106060",
+      "README.txt": "c9f095d247c12fea977ac31b33b848620ad8276b575b1734e863e6e0a5e45839",
+      "active_minutes.csv": "cdcea2fe01189dbfabbd8ede7637d6f04d8d20a0dc1b193a2fedf02df12d47fd",
+      "active_zone_minutes.csv": "ba1310d934e9b9602408607c0642dd6269b67fa37f7f88324d4d91b0be1cdd77",
+      "altitude.csv": "6655a6c529e1e7d89d99db17c104cbde4fb0c17ef85490e7e8735ff975ede8f8",
+      "calories.csv": "1c74cebcc57d4e01df5442d59fd90774133a4667cf007dd767bffbd1422c6cdd",
+      "computed_temperature.csv": "999112dd4b1eed88b7cc95f3b893f68f6c96690cb3c8180aa39c23f2902a50ef",
+      "demographic_vo2_max.csv": "c6d98572827440b4506f9bad7b265eb481f3363ac94bcbe537d59bfc29aefe48",
+      "distance.csv": "9d0a44c2d122b573c5a251f5b89179f25d93e15013715b1ec7c24c69ec25b667",
+      "estimated_oxygen_variation.csv": "27fd8d890cf173f50d0703dfe2b7eb1d04f571fa6c47207060cf2cc1a2878750",
+      "exercise.csv": "a0258d39007b23808b1979adfad027debefe91e41b9361dd3768ba664a1a25c2",
+      "glucose.csv": "ca3b087ce9a50ee64be4cece686d57e28994648c731c0ca9ddbc4bf188cc6e29",
+      "heart_rate.csv": "3ae386a5084b75dfd73a9bb7376ef97916c61f2a9a6230497311fc48296fff27",
+      "heart_rate_variability_details.csv": "64af09a6b012bdd9ad046b369b293e69cd603f62462dc5057b308e5a34ce3280",
+      "height_and_weight.csv": "344733242a0aa64ee6fcfd2f95ab305264199f5eac737734759cfe58a4605dd7",
+      "hormones_and_selfreport.csv": "d1c35ede822bd91cc64b8cec9e4fb325dfc0488982730f4ce774ee2f8f3a2ab5",
+      "respiratory_rate_summary.csv": "bada043af770739545da30444e499c626cf5b88ff120e015cca3bbbc51bc6481",
+      "resting_heart_rate.csv": "168c4c133c6fefc2d5e183bd517ed8eb75c5999f3bf2e1e679d335f7e9eb4a80",
+      "sleep.csv": "fd16842645385efe6801c5037a9aa64625d584dec26c19dcac84908d91fbf0a2",
+      "sleep_score.csv": "0ae4315cc15ab16ec05ca08b4ad130397c40bca2be46e927662987dd1cdd249a",
+      "steps.csv": "71f45ab98ef6e748935dad6e8d07702417aef6474374b6944e9931834334ad8e",
+      "stress_score.csv": "7d93c630fa3985b38daa9fda99c351f71686d2060a07a5770c32ae706a8ba46e",
+      "subject-info.csv": "0eac68ca0b188d3280d19fd461cc44133edde0b4a6530362f9610039509420f7",
+      "time_in_heart_rate_zones.csv": "ec41e9870cc4d7917b6a47ca55299440781e3ffdc192a2b75cdfef3b03bb3291",
+      "wrist_temperature.csv": "833c86fff7c6aad65c67fd147f5b26a833f4f34557c3720d80da7230017c1b13"
+    }
+  },
+  "manifest_sha256": "9c7fec0768329b7e6e3d843ee44a7db0fb814bf18f0653d870b28af66de69195",
+  "salt": "infradian-v1",
+  "schema_version": "1.0.0",
+  "splits": {
+    "assignments_by_hash": {
+      "0": {
+        "0": [
+          "0382c3b8c9e9d97f",
+          "17abde2a5e2e5871",
+          "28b24f763c233076",
+          "5029c6c08fda9a6f",
+          "80e64149dd705d41",
+          "e95eb13a40e0de35",
+          "f90499fa2ff839f1"
+        ],
+        "1": [
+          "01b72fcba728492d",
+          "30e768cd4be2e431",
+          "b1e74218ca02c4bf",
+          "c1d778d4e746353d",
+          "c5abe0e3cbf7059a",
+          "d74c4891ff2614eb",
+          "db7370812e94f730"
+        ],
+        "2": [
+          "1c8bc32bf1ed1f54",
+          "42418524ccdb7281",
+          "853483e940c4519f",
+          "ba58eda45594ae42",
+          "c549d2915082e0f9",
+          "df1605a0fcf57b48",
+          "febb713d18e83591"
+        ],
+        "3": [
+          "0199ac8b17d0f584",
+          "558b4d43a76f1d5b",
+          "7624107450009c7d",
+          "831e4835d4603bdc",
+          "94dad1644aae835f",
+          "a1b51770c2843f4b",
+          "e514cde0604be291"
+        ],
+        "4": [
+          "0c1c5e1c1d7c0925",
+          "3a99f5b8ea0d4c2b",
+          "978dd6ecc877faaf",
+          "dabb4034910c976b",
+          "db12042c741826ef",
+          "ea90a9fe798dbb36",
+          "f5448539d3aee70d"
+        ],
+        "5": [
+          "02c17c4750a11ead",
+          "3faf7a5b5284e04a",
+          "4dcbbc89355ae149",
+          "a5e3e7650d298220",
+          "aa03ebc0bf08d1fd",
+          "b3fcca04868a4afa",
+          "d297267b71c45702"
+        ]
+      },
+      "1": {
+        "0": [
+          "1c8bc32bf1ed1f54",
+          "4dcbbc89355ae149",
+          "853483e940c4519f",
+          "b3fcca04868a4afa",
+          "c549d2915082e0f9",
+          "dabb4034910c976b",
+          "febb713d18e83591"
+        ],
+        "1": [
+          "0199ac8b17d0f584",
+          "0c1c5e1c1d7c0925",
+          "42418524ccdb7281",
+          "558b4d43a76f1d5b",
+          "a1b51770c2843f4b",
+          "b1e74218ca02c4bf",
+          "db12042c741826ef"
+        ],
+        "2": [
+          "28b24f763c233076",
+          "978dd6ecc877faaf",
+          "aa03ebc0bf08d1fd",
+          "c1d778d4e746353d",
+          "c5abe0e3cbf7059a",
+          "e95eb13a40e0de35",
+          "f90499fa2ff839f1"
+        ],
+        "3": [
+          "17abde2a5e2e5871",
+          "30e768cd4be2e431",
+          "3a99f5b8ea0d4c2b",
+          "5029c6c08fda9a6f",
+          "80e64149dd705d41",
+          "a5e3e7650d298220",
+          "d74c4891ff2614eb"
+        ],
+        "4": [
+          "0382c3b8c9e9d97f",
+          "3faf7a5b5284e04a",
+          "7624107450009c7d",
+          "831e4835d4603bdc",
+          "94dad1644aae835f",
+          "e514cde0604be291",
+          "ea90a9fe798dbb36"
+        ],
+        "5": [
+          "01b72fcba728492d",
+          "02c17c4750a11ead",
+          "ba58eda45594ae42",
+          "d297267b71c45702",
+          "db7370812e94f730",
+          "df1605a0fcf57b48",
+          "f5448539d3aee70d"
+        ]
+      }
+    },
+    "group_key": "participant_id",
+    "n_splits": 6,
+    "scheme": "RepeatedStratifiedGroupKFold",
+    "seeds": [
+      0,
+      1
+    ],
+    "stratify_key": "regularity"
+  },
+  "strata": {
+    "regularity": {
+      "definition": "range(cycle_len)>=9 OR any(len<24 or len>38)",
+      "irregular": [
+        "0199ac8b17d0f584",
+        "02c17c4750a11ead",
+        "0382c3b8c9e9d97f",
+        "0c1c5e1c1d7c0925",
+        "17abde2a5e2e5871",
+        "28b24f763c233076",
+        "30e768cd4be2e431",
+        "3a99f5b8ea0d4c2b",
+        "3faf7a5b5284e04a",
+        "4dcbbc89355ae149",
+        "558b4d43a76f1d5b",
+        "7624107450009c7d",
+        "80e64149dd705d41",
+        "831e4835d4603bdc",
+        "853483e940c4519f",
+        "94dad1644aae835f",
+        "978dd6ecc877faaf",
+        "aa03ebc0bf08d1fd",
+        "b1e74218ca02c4bf",
+        "b3fcca04868a4afa",
+        "ba58eda45594ae42",
+        "c1d778d4e746353d",
+        "c549d2915082e0f9",
+        "c5abe0e3cbf7059a",
+        "d74c4891ff2614eb",
+        "db12042c741826ef",
+        "db7370812e94f730",
+        "df1605a0fcf57b48",
+        "f5448539d3aee70d",
+        "f90499fa2ff839f1",
+        "febb713d18e83591"
+      ],
+      "regular": [
+        "01b72fcba728492d",
+        "1c8bc32bf1ed1f54",
+        "42418524ccdb7281",
+        "5029c6c08fda9a6f",
+        "a1b51770c2843f4b",
+        "a5e3e7650d298220",
+        "d297267b71c45702",
+        "dabb4034910c976b",
+        "e514cde0604be291",
+        "e95eb13a40e0de35",
+        "ea90a9fe798dbb36"
+      ]
+    }
+  }
+}

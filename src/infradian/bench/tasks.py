@@ -17,10 +17,14 @@ import pandas as pd
 from infradian.bench.splits import regularity_of
 from infradian.data import canonical as C
 
-# Published-style PdG confirmation: a sustained rise over the days AFTER a candidate ovulation,
-# relative to the days BEFORE it, using an absolute-fraction threshold rather than a within-window
-# SD (which would be circular). Threshold is on normalized PdG within the cycle.
-PDG_RISE_FRACTION = 0.25
+# Ovulation is anchored on the LH SURGE (the clinical gold-standard predictor; ovulation follows
+# the surge by ~24h). PdG provides corroboration WHEN available, but must not veto a clear surge
+# just because PdG was not sampled in the pre-ovulation window — in mcPHASES, PdG is measured
+# selectively (mostly in the luteal phase), so a PdG-mandatory rule would spuriously flag nearly
+# every cycle anovulatory. A cycle is anovulatory only when no clear LH surge is present.
+PDG_RISE_FRACTION = 0.20
+LH_SURGE_ABS = 15.0  # absolute LH floor for a surge (Mira-scale; baseline LH ~1-5)
+LH_SURGE_REL = 2.5  # surge must exceed this multiple of the cycle's median LH
 
 
 @dataclass
@@ -42,28 +46,38 @@ def _onset_days(g: pd.DataFrame) -> list[int]:
 
 
 def confirm_ovulation(cycle_slice: pd.DataFrame) -> tuple[int, bool]:
-    """Return (ovulation_day, anovulatory) for one cycle slice using LH argmax + PdG confirmation.
+    """Return (ovulation_day, anovulatory) for one cycle slice.
 
-    Used for real data where no ground-truth ovulation column exists. The PdG check compares the
-    normalized post-candidate mean against the pre-candidate mean; a rise below PDG_RISE_FRACTION
-    is treated as unconfirmed (anovulatory).
+    Rule (robust to PdG sparsity):
+      1. Ovulation day = day of the LH peak.
+      2. The cycle is OVULATORY if the LH peak is a clear surge: above an absolute floor AND a
+         multiple of the cycle's median LH.
+      3. PdG, when sampled around the candidate day, must not CONTRADICT it — a clearly falling PdG
+         after a putative surge downgrades to anovulatory. Absent PdG does not veto.
     """
     g = cycle_slice.sort_values(C.KEY_DAY).reset_index(drop=True)
-    if g["lh"].isna().all():
+    lh = g["lh"].to_numpy(dtype=float)
+    if np.all(np.isnan(lh)):
         return -1, True
-    ov_idx = int(g["lh"].to_numpy().argmax())
+    ov_idx = int(np.nanargmax(lh))
+    ov_day = int(g[C.KEY_DAY].iloc[ov_idx])
+    peak = float(lh[ov_idx])
+    med = float(np.nanmedian(lh))
+
+    is_surge = (peak >= LH_SURGE_ABS) and (peak >= LH_SURGE_REL * max(med, 1e-6))
+    if not is_surge:
+        return ov_day, True  # no clear surge -> anovulatory
+
+    # Optional PdG corroboration: only downgrade if PdG data exists on BOTH sides and clearly falls.
     pdg = g["pdg"].to_numpy(dtype=float)
-    if np.all(np.isnan(pdg)) or np.nanmax(pdg) <= np.nanmin(pdg):
-        return -1, True
-    pdg_norm = (pdg - np.nanmin(pdg)) / (np.nanmax(pdg) - np.nanmin(pdg) + 1e-9)
-    pre = pdg_norm[max(0, ov_idx - 6) : ov_idx]
-    post = pdg_norm[ov_idx + 1 : ov_idx + 6]
-    if len(pre) == 0 or len(post) == 0:
-        return -1, True
-    rise = float(np.nanmean(post) - np.nanmean(pre))
-    if rise < PDG_RISE_FRACTION:
-        return int(g[C.KEY_DAY].iloc[ov_idx]), True  # LH peak location kept, but flagged anovulatory
-    return int(g[C.KEY_DAY].iloc[ov_idx]), False
+    pre = pdg[max(0, ov_idx - 6) : ov_idx]
+    post = pdg[ov_idx + 1 : ov_idx + 7]
+    if np.isfinite(pre).sum() >= 2 and np.isfinite(post).sum() >= 2:
+        rise = float(np.nanmean(post) - np.nanmean(pre))
+        span = float(np.nanmax(pdg) - np.nanmin(pdg)) if np.isfinite(pdg).any() else 0.0
+        if span > 0 and rise < -PDG_RISE_FRACTION * span:  # PdG clearly falls -> contradicts surge
+            return ov_day, True
+    return ov_day, False
 
 
 def extract_cycles(df: pd.DataFrame, use_metadata: bool = True) -> list[Cycle]:
