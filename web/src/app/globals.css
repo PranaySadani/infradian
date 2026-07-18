@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* INFRADIAN design system — "scientific instrument", dark-first.
+   The only saturated colour on screen is DATA. Chrome is ink-on-surface. */
+
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "IBM Plex Mono", monospace;
+
+  /* dark = the instrument (default) */
+  --bg-base: #0b0e12;
+  --bg-surface: #14181e;
+  --bg-raised: #1b212a;
+  --border-hair: rgba(255, 255, 255, 0.09);
+  --border-strong: #2a323d;
+  --ink-primary: #f2f5f8;
+  --ink-secondary: #a9b2c0;
+  --ink-muted: #8b93a0;
+  --grid: #232932;
+  --axis: #333b47;
+
+  --s-e3g: #3987e5;
+  --s-pdg: #199e70;
+  --s-lh: #d95926;
+  --calendar: #8a93a1;
+  --truth: #f2f5f8;
+
+  --good: #0ca30c;
+  --warning: #fab219;
+  --critical: #d03b3b;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-base);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,0 +1,178 @@
+{
+  "dataset": {
+    "anovulatory_rate": 0.07449494949494949,
+    "n_cycles": 2376,
+    "n_ovulatory": 2199,
+    "n_participants": 600
+  },
+  "git_commit": "ba25b93ddda1186189f83e62da1fff67573ca9e2",
+  "integrity_status": "OK",
+  "metrics": [
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "macro_f1",
+      "n": 72000,
+      "stratum": "all",
+      "task": "T3",
+      "value": 0.8123960310877143
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 3.8203426378827907,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 600,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 2.8986111111111112
+    },
+    {
+      "ci_hi": 0.2756784179227972,
+      "ci_lo": 0.20437009902245104,
+      "extra": {
+        "D_ci_hi": 0.4513742490825725,
+        "D_ci_lo": 0.1918361014962373,
+        "median_D_i": 0.311355655334574,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 4.082641947672562e-20
+      },
+      "is_primary": false,
+      "metric": "SoC",
+      "n": 600,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 0.24126933475330814
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 2.4432567321077427,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 423,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 2.3263987391646963
+    },
+    {
+      "ci_hi": 0.07945112639476569,
+      "ci_lo": 0.0153206685643462,
+      "extra": {
+        "D_ci_hi": 0.14716918345339725,
+        "D_ci_lo": -0.04411400688438594,
+        "median_D_i": 0.06271704225389119,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 0.02245950896443497
+      },
+      "is_primary": false,
+      "metric": "SoC",
+      "n": 423,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 0.0478287817270171
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 7.111344548294348,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 177,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 4.266101694915254
+    },
+    {
+      "ci_hi": 0.4533236404826405,
+      "ci_lo": 0.34623604847793965,
+      "extra": {
+        "D_ci_hi": 2.7593108032557234,
+        "D_ci_lo": 1.8859120964747227,
+        "median_D_i": 2.401705358186412,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 3.65354472549029e-24
+      },
+      "is_primary": true,
+      "metric": "SoC",
+      "n": 177,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 0.40009914216032794
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_pr_auc": 0.07449494949494949,
+        "lift_over_calendar": 0.14775051742466389,
+        "prevalence": 0.07449494949494949
+      },
+      "is_primary": false,
+      "metric": "pr_auc",
+      "n": 2376,
+      "stratum": "all",
+      "task": "T2-A",
+      "value": 0.2222454669196134
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "spearman",
+      "n": 600,
+      "stratum": "all",
+      "task": "T1-pdg",
+      "value": 0.8802145323766575
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "spearman",
+      "n": 600,
+      "stratum": "all",
+      "task": "T1-e3g",
+      "value": 0.8657296753282625
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "interpretation": "dilution-artifact bound; expected ~0"
+      },
+      "is_primary": false,
+      "metric": "spearman_follicular_only",
+      "n": 600,
+      "stratum": "all",
+      "task": "T1-NC",
+      "value": 0.30038866819395527
+    }
+  ],
+  "model": "infradian-ref (LightGBM phase+hormone)",
+  "notes": "",
+  "prompt_hashes": {},
+  "run_name": "model-tierC",
+  "schema_version": "1.0.0",
+  "seeds": [
+    0,
+    1
+  ],
+  "splits": {},
+  "tier": "C",
+  "wall_clock_s": 6.02
+}

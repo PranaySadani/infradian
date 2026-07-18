@@ -1,0 +1,178 @@
+{
+  "dataset": {
+    "anovulatory_rate": 0.2777777777777778,
+    "n_cycles": 90,
+    "n_ovulatory": 65,
+    "n_participants": 42
+  },
+  "git_commit": "ba25b93ddda1186189f83e62da1fff67573ca9e2",
+  "integrity_status": "OK",
+  "metrics": [
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "macro_f1",
+      "n": 5658,
+      "stratum": "all",
+      "task": "T3",
+      "value": 0.2776400517235519
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 4.960116656703034,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": 6.700980392156862
+    },
+    {
+      "ci_hi": 0.10232303164452791,
+      "ci_lo": -1.0594694866650285,
+      "extra": {
+        "D_ci_hi": -0.20422181671764283,
+        "D_ci_lo": -4.675059533728689,
+        "median_D_i": -1.3911463128582704,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 0.042763650601964874
+      },
+      "is_primary": false,
+      "metric": "SoC",
+      "n": 34,
+      "stratum": "all",
+      "task": "T2-R",
+      "value": -0.35097233713268583
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 2.7891884674187994,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": 5.166666666666667
+    },
+    {
+      "ci_hi": -0.16338319577073568,
+      "ci_lo": -1.9312145131991298,
+      "extra": {
+        "D_ci_hi": 0.04520431724444651,
+        "D_ci_lo": -5.03604188654144,
+        "median_D_i": -2.5308898987178727,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 0.064453125
+      },
+      "is_primary": false,
+      "metric": "SoC",
+      "n": 10,
+      "stratum": "regular",
+      "task": "T2-R",
+      "value": -0.8523906602295896
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_mae": 5.864670068904798,
+        "model": true
+      },
+      "is_primary": false,
+      "metric": "mae_days",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": 7.340277777777779
+    },
+    {
+      "ci_hi": 0.20944737483388579,
+      "ci_lo": -1.086962363737822,
+      "extra": {
+        "D_ci_hi": 0.5552810550162324,
+        "D_ci_lo": -5.672918242783975,
+        "median_D_i": -1.0057692307692303,
+        "vs_baseline": "b1c_calendar_hazard (prospective)",
+        "wilcoxon_p": 0.2086786884875126
+      },
+      "is_primary": true,
+      "metric": "SoC",
+      "n": 24,
+      "stratum": "irregular",
+      "task": "T2-R",
+      "value": -0.2516096713942757
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "calendar_pr_auc": 0.2777777777777778,
+        "lift_over_calendar": 0.03657498244513446,
+        "prevalence": 0.2777777777777778
+      },
+      "is_primary": false,
+      "metric": "pr_auc",
+      "n": 90,
+      "stratum": "all",
+      "task": "T2-A",
+      "value": 0.31435276022291225
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "spearman",
+      "n": 20,
+      "stratum": "all",
+      "task": "T1-pdg",
+      "value": 0.07606067724156858
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {},
+      "is_primary": false,
+      "metric": "spearman",
+      "n": 42,
+      "stratum": "all",
+      "task": "T1-e3g",
+      "value": 0.13028242943405566
+    },
+    {
+      "ci_hi": null,
+      "ci_lo": null,
+      "extra": {
+        "interpretation": "dilution-artifact bound; expected ~0"
+      },
+      "is_primary": false,
+      "metric": "spearman_follicular_only",
+      "n": 20,
+      "stratum": "all",
+      "task": "T1-NC",
+      "value": 0.0498415376188106
+    }
+  ],
+  "model": "infradian-ref (LightGBM phase+hormone)",
+  "notes": "Trained on Tier C synthetic only; evaluated on real mcPHASES. Sim-to-real transfer.",
+  "prompt_hashes": {},
+  "run_name": "transfer-sim2real",
+  "schema_version": "1.0.0",
+  "seeds": [
+    0,
+    1
+  ],
+  "splits": {},
+  "tier": "B",
+  "wall_clock_s": 0.39
+}

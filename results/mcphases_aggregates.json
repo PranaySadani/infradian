@@ -1,0 +1,18 @@
+{
+  "n_participants":42,
+  "n_segments":62,
+  "n_participant_days":5659,
+  "days_with_hormone":5339,
+  "days_with_hormone_and_3plus_wearables":4988,
+  "pdg_days":1864,
+  "lh_days":5339,
+  "e3g_days":5338,
+  "wearable_null_frac":{
+    "skin_temp_dev_c":0.092,
+    "rhr_bpm":0.0,
+    "hrv_rmssd_ms":0.145,
+    "resp_rate":0.163,
+    "sleep_eff":0.103,
+    "steps":1.0
+  }
+}

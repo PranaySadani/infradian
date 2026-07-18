@@ -38,3 +38,6 @@ node_modules/
 # Scratch
 scratch/
 *.log
+
+# large model binaries (published to HF instead)
+results/models/**/*.joblib

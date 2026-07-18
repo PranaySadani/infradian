@@ -57,7 +57,9 @@ ANOVULATORY_RATE_REGULAR = 0.03
 IRREGULAR_FRACTION = 0.33
 
 MISSING_BURST_RATE = (0.10, 0.25)  # fraction of days lost to off-wrist bursts
-HYDRATION_ALPHA = 0.18  # strength of the (bounded) wearable->urine-concentration nuisance path
+HYDRATION_ALPHA = 0.07  # strength of the (bounded) wearable->urine-concentration nuisance path.
+# Kept modest on purpose: the T1-NC follicular-only control should reveal a SMALL artifact so the
+# strong T1 hormone-reconstruction result is clearly signal, not dilution.
 
 
 @dataclass
