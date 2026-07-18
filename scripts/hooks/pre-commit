@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# INFRADIAN privacy guard.
+# Blocks any commit that stages a file under data/raw/ (or any data/ payload).
+# mcPHASES is DUA-restricted; committing it would be a license violation.
+set -euo pipefail
+
+staged=$(git diff --cached --name-only)
+
+# Block anything under data/ except the .gitkeep placeholder.
+offenders=$(echo "$staged" | grep -E '^data/' | grep -vE '^data/\.gitkeep$' || true)
+
+if [ -n "$offenders" ]; then
+    echo "ERROR: attempt to commit files under data/ — this is blocked." >&2
+    echo "mcPHASES is DUA-restricted (PhysioNet RHD License 1.5.0) and must never be committed." >&2
+    echo "Offending paths:" >&2
+    echo "$offenders" | sed 's/^/  - /' >&2
+    exit 1
+fi
+
+exit 0

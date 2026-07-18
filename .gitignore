@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------------------
+# DATA — the entire data/ tree is gitignored. mcPHASES is DUA-restricted
+# (PhysioNet Restricted Health Data License 1.5.0) and MUST NEVER be committed.
+# A pre-commit hook (scripts/hooks/pre-commit) also blocks staged data/raw paths.
+# ---------------------------------------------------------------------------
+/data/
+!/data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Node / Next.js
+web/node_modules/
+web/.next/
+web/out/
+web/.vercel/
+node_modules/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Scratch
+scratch/
+*.log
