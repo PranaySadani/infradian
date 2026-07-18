@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import numpy as np
 import pandas as pd
 
 SCHEMA_VERSION = "1.0.0"
@@ -123,7 +124,10 @@ def validate(df: pd.DataFrame, *, require_hormones: bool = False) -> pd.DataFram
                 raise ValueError(f"canonical frame missing hormone column: {c}")
 
     # segment_id must embed participant_id (invariant used by the split logic).
-    bad = df[~df[KEY_SEGMENT].astype(str).str.startswith(df[KEY_PARTICIPANT].astype(str))]
+    seg = df[KEY_SEGMENT].astype(str)
+    pid = df[KEY_PARTICIPANT].astype(str)
+    prefix_ok = [s.startswith(p) for s, p in zip(seg, pid, strict=True)]
+    bad = df[~np.asarray(prefix_ok)]
     if len(bad) > 0:
         raise ValueError(
             f"{len(bad)} rows have segment_id not prefixed by participant_id "
