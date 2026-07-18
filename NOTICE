@@ -1,0 +1,17 @@
+INFRADIAN
+Copyright 2026 INFRADIAN contributors
+
+Licensed under the Apache License, Version 2.0 (the "License"); see LICENSE.
+
+This product includes:
+- INFRADIAN-SYNTH-1K synthetic cohort, released under CC-BY-4.0.
+- NHANES-derived harmonized tables (CDC/NCHS, US public domain), released CC0-1.0.
+- infradian-ref-s reference model weights, released under Apache-2.0.
+
+This product does NOT include, and does not redistribute, the mcPHASES dataset
+(PhysioNet Restricted Health Data License 1.5.0). Only a loader, file checksums,
+salted-hash split manifest, and aggregate metrics derived from it are provided.
+Obtain mcPHASES from PhysioNet under your own signed Data Use Agreement.
+
+Physiological effect sizes used to calibrate the synthetic generator are cited to
+primary sources in docs/effect_sizes.md.

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use INFRADIAN, please cite it."
+title: "INFRADIAN: An open benchmark for hormonal trajectory inference from consumer wearables"
+version: 0.1.0
+date-released: 2026-07-18
+license: Apache-2.0
+abstract: >-
+  INFRADIAN is an open benchmark, synthetic cohort, and reference model for inferring
+  daily hormonal state from consumer wearables, scored on Skill over Calendar. It ships
+  a CC-BY synthetic cohort so the whole benchmark runs with no data-use agreement, plus
+  a checksum-verified split manifest for gated clinical data. On the synthetic tier the
+  model beats a strong calendar baseline on irregular-cycle ovulation timing; on real
+  mcPHASES data the pre-registered primary endpoint is null. The sim-to-real gap is the
+  reported finding.
+keywords:
+  - womens-health
+  - menstrual-cycle
+  - wearables
+  - benchmark
+  - endocrinology
+references:
+  - type: data
+    title: "mcPHASES"
+    doi: 10.13026/zx6a-2c81
+    notes: "Restricted access (PhysioNet Restricted Health Data License 1.5.0)."
