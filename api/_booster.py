@@ -60,7 +60,8 @@ def _arr(d: dict[str, str], key: str, dtype) -> np.ndarray:
 
 
 def load_model(path: str) -> Model:
-    text = open(path).read()
+    with open(path) as fh:
+        text = fh.read()
     blocks = text.split("\n\n")
 
     header = _parse_block(blocks[0])
@@ -111,7 +112,7 @@ def _score_tree(tree: Tree, X: np.ndarray) -> np.ndarray:
 
             v = X[i, f]
             if not np.isfinite(v):
-                go_left = default_left if missing_type == 2 else (0.0 <= thr)
+                go_left = default_left if missing_type == 2 else (thr >= 0.0)
             elif missing_type == 1 and v == 0.0:
                 go_left = default_left
             else:
