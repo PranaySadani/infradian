@@ -1,11 +1,11 @@
-# Model Card — infradian-ref-s
+# Model Card: infradian-ref-s
 
 Following Mitchell et al., "Model Cards for Model Reporting."
 
 ## Model details
 - **Name:** infradian-ref-s (INFRADIAN reference, synthetic-trained).
-- **Architecture:** three LightGBM models — a 4-class phase classifier and two hormone regressors
-  (PdG, E3G) — plus a median-filter + one-argmax ovulation decoder. Shallow, strongly regularized
+- **Architecture:** three LightGBM models, a 4-class phase classifier and two hormone regressors
+  (PdG, E3G), plus a median-filter + one-argmax ovulation decoder. Shallow, strongly regularized
   (num_leaves 15, min_child_samples 30, reg_lambda 1.0); hyperparameters fixed and tuned on synthetic
   data only, so there is zero selection leakage on real data.
 - **Inputs:** causal windowed features from wearable channels (relative skin temperature, resting HR,
@@ -16,7 +16,7 @@ Following Mitchell et al., "Model Cards for Model Reporting."
 ## Training data
 - **Synthetic only (INFRADIAN-SYNTH-1K, CC-BY-4.0).** This is deliberate: mcPHASES is DUA-restricted, and
   a checkpoint trained on restricted health data is a legal grey zone, so we do not distribute one. The
-  synthetic-trained checkpoint is the only one we publish — which is why sim-to-real transfer is a
+  synthetic-trained checkpoint is the only one we publish, which is why sim-to-real transfer is a
   structural result rather than a side experiment.
 
 ## Evaluation
@@ -35,7 +35,7 @@ Research infrastructure for benchmarking wearable-derived cycle inference. A ref
 
 We considered a behavioral-use license (OpenRAIL) and rejected it: it is non-OSI and unenforceable in
 practice, and it blocks legitimate reuse. Misuse is addressed by this card's out-of-scope section, the
-app's non-diagnostic banner, and the LLM refusal layer — not by license text.
+app's non-diagnostic banner, and the LLM refusal layer, not by license text.
 
 ## Ethical considerations
 The genuine harm vector is misreading cycle estimates as contraception. The explanation layer hard-

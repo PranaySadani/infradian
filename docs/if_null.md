@@ -9,7 +9,7 @@ failure.
 
 > The benchmark's first result is a **frontier map**, not a win. Wearable-derived hormonal
 > inference shows **no skill** over a properly specified calendar baseline at negative lead times,
-> **positive skill** at lag 0 to +3 days, and **large skill on ovulation *occurrence*** — where the
+> **positive skill** at lag 0 to +3 days, and **large skill on ovulation *occurrence***: where the
 > calendar cannot compete by construction. That is the physiologically expected pattern (the thermal
 > shift is a *consequence* of ovulation, appearing 1–3 days after it), and it is the first time
 > anyone has measured it against a strong baseline with participant-level confidence intervals.
@@ -36,7 +36,7 @@ result; showing the expected null is the credible one.
    it requires no wearable result at all.
 
 ## What to do operationally
-- Keep the hero figure (skill vs lead time by stratum) exactly as designed — it reads correctly
+- Keep the hero figure (skill vs lead time by stratum) exactly as designed, it reads correctly
   whether the curve is above or below zero.
 - Change the `/skill` headline copy from "we beat the calendar" to "we mapped where wearables do
   and do not beat the calendar."

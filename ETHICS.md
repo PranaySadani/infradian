@@ -13,7 +13,7 @@ is unsafe. This is handled in three places, not by hopeful disclaimers:
 - **mcPHASES is not redistributed.** No raw rows, no per-participant figures, no mcPHASES-trained
   checkpoint. Only a loader, file checksums, salted-hash split manifest, and aggregate metrics with a
   **minimum cell size ≥ 5** suppression rule. A pre-commit hook blocks any data commit.
-- The salted-hash split manifest cannot be inverted usefully; non-redistribution — not obscurity — is
+- The salted-hash split manifest cannot be inverted usefully; non-redistribution, not obscurity, is
   what protects privacy.
 - NHANES-derived tables carry the NCHS no-re-identification obligation forward in their card.
 

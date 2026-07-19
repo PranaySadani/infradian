@@ -16,7 +16,7 @@ models (4-phase classifier + PdG/E3G regressors) with a median-filter ovulation 
 
 **Trained on synthetic data only** (INFRADIAN-SYNTH-1K). This is deliberate: the real clinical data
 (mcPHASES) is DUA-restricted, so the only checkpoint we can legally distribute is synthetic-trained.
-Sim-to-real transfer is therefore a structural result — on real mcPHASES the transfer is weak
+Sim-to-real transfer is therefore a structural result, on real mcPHASES the transfer is weak
 (macro-F1 0.28), which is exactly the gap the benchmark measures.
 
 ## Use

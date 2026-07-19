@@ -2,7 +2,7 @@
 
 Everything is built and configured. These are the commands to publish. Run them with your own logins.
 
-## 1. GitHub — make the repo public (when ready)
+## 1. GitHub: make the repo public (when ready)
 The repo is pushed **private** at `github.com/PranaySadani/infradian`. To publish:
 ```bash
 gh repo edit PranaySadani/infradian --visibility public --accept-visibility-change-consequences
@@ -17,13 +17,13 @@ npx vercel@latest --prod          # first run prompts login + links the project
 #     set Root Directory = web  (vercel.json handles build + output)
 ```
 
-**Point the frontend at a hosted backend** (optional — every view works without it):
+**Point the frontend at a hosted backend** (optional, every view works without it):
 ```bash
 # set in the Vercel project's Environment Variables, then redeploy
 NEXT_PUBLIC_API_URL=https://<your-hf-space>.hf.space
 ```
 Left unset it defaults to `http://localhost:8000`, so the header shows "API offline" in
-production and the live-inference panel explains why. Nothing else is affected — all charts,
+production and the live-inference panel explains why. Nothing else is affected, all charts,
 metrics and explanations are static JSON baked in at build time.
 
 ### Run the whole stack locally
