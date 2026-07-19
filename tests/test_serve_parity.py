@@ -121,8 +121,10 @@ def test_numpy_booster_is_bit_identical_to_lightgbm():
         mine = _booster.load_model(str(MODEL_DIR / fname))
         X = rng.normal(size=(120, ref.num_feature()))
         variants = {"dense": X}
-        nan_x = X.copy(); nan_x[rng.random(X.shape) < 0.25] = np.nan
-        zero_x = X.copy(); zero_x[rng.random(X.shape) < 0.2] = 0.0
+        nan_x = X.copy()
+        nan_x[rng.random(X.shape) < 0.25] = np.nan
+        zero_x = X.copy()
+        zero_x[rng.random(X.shape) < 0.2] = 0.0
         variants["nan"] = nan_x
         variants["zero"] = zero_x
         for label, data in variants.items():
