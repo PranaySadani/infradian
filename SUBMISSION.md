@@ -192,10 +192,9 @@ Replace the bracketed parts with your own details.
 
 ## 6. Recording notes
 
-- Run the app locally so the header reads "API live": `make serve` in one terminal, then
-  `cd web && npm run build && npx serve out -l 3210` in another. Or record against
-  https://infradian.vercel.app, where the header will read "API offline", which is a normal state
-  because every view reads static JSON. Mention that if it is on screen.
+- Record straight against https://infradian.vercel.app. The header reads "API live": the inference
+  API runs as a Vercel Python function on the same origin, so the live inference panel really does
+  call the model. No local server needed.
 - Every trajectory shown anywhere is a synthetic participant. Real clinical data appears only as
   aggregate metrics. Say this once, on camera, during the demo.
 - Screen capture at 1440 by 900 or larger. The layout is designed for a laptop-width viewport.
