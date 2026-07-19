@@ -39,5 +39,5 @@ node_modules/
 scratch/
 *.log
 
-# large model binaries (published to HF instead)
-results/models/**/*.joblib
+# the reference checkpoint is small (2MB) and IS a deliverable, so it is tracked.
+# It is also what the Vercel Python function loads at runtime.

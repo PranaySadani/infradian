@@ -1,0 +1,16 @@
+# Keep the deploy upload small. Patterns are anchored with a leading slash so they match ONLY at
+# the repo root: an unanchored "data" would also strip web/public/data, which the frontend needs.
+/.git
+/.venv
+/node_modules
+/web/node_modules
+/web/.next
+/data
+/docs
+/tests
+/notebooks
+*.zip
+__pycache__
+.pytest_cache
+.ruff_cache
+/results/models/infradian-ref-s/infradian_ref.joblib

@@ -1,8 +1,10 @@
 // Backend wiring. The demo path is static JSON, so the API is strictly additive:
 // it powers live inference and synthetic sampling. Every call degrades gracefully.
 
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
+// Default to same-origin `/api`, which is where the Vercel Python function lives in production.
+// Override with NEXT_PUBLIC_API_URL to point at a separately hosted backend (e.g. the local
+// FastAPI server on :8000 during development).
+export const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "/api").replace(/\/$/, "");
 
 export interface DayRecord {
   day_in_study: number;

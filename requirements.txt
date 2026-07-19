@@ -1,0 +1,7 @@
+# numpy only. The training stack (pandas, scikit-learn, scipy via lightgbm) installs to ~660MB,
+# over Vercel's 500MB function limit, and a web framework is one more thing that can fail to
+# install in the build image. The function uses stdlib BaseHTTPRequestHandler plus:
+#   api/_inference.py  numpy reimplementation of the training feature transform
+#   api/_booster.py    numpy reader for LightGBM's model text format
+# tests/test_serve_parity.py proves both match the training path exactly.
+numpy==2.5.1

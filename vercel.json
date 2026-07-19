@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "cd web && npm install && npm run build",
+  "outputDirectory": "web/out",
+  "cleanUrls": true,
+  "functions": {
+    "api/index.py": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "excludeFiles": "{web,node_modules,data,datasets,docs,tests,scripts,notebooks,.venv,.git}/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    }
+  ]
+}
