@@ -3,6 +3,8 @@
 **An open benchmark for hormonal trajectory inference from consumer wearables.**
 *The rhythm nobody benchmarks.*
 
+**[Live app](https://infradian.vercel.app)** · **[Benchmark spec](BENCHMARK.md)** · **[Synthetic dataset (CC-BY)](datasets/infradian-synth-1k)** · **[Results](results/)** · **[Limitations](LIMITATIONS.md)**
+
 Everyone knows the **circadian** rhythm. Far fewer people can name the **infradian** one — the ~28-day
 endocrine cycle that shapes temperature, heart rate, sleep, mood, and metabolism for roughly half of
 humanity. Period-tracking apps predict it with calendar arithmetic: count the days, guess the rest.
@@ -47,9 +49,11 @@ than a suspicious win.**
   participant-disjoint splits, a calibration protocol, and mandatory subgroup reporting.
 - **A runnable harness** (`infradian` Python package, Apache-2.0) with a mechanically-enforced causality
   contract (future-perturbation tests) and cluster-bootstrap confidence intervals.
-- **INFRADIAN-SYNTH-1K** — a CC-BY synthetic longitudinal cohort so *anyone* can run the whole benchmark
-  with no data-use agreement. Wearable coupling is calibrated to *verified* published effect sizes
-  (`docs/effect_sizes.md`), with a hydration nuisance term that makes the dilution control meaningful.
+- **[INFRADIAN-SYNTH-1K](datasets/infradian-synth-1k)** — a CC-BY synthetic longitudinal cohort so *anyone*
+  can run the whole benchmark with no data-use agreement. 600 participants, 72,000 participant-days,
+  participant-disjoint train/validation/test parquet splits, shipped in this repo. Wearable coupling is
+  calibrated to *verified* published effect sizes (`docs/effect_sizes.md`), with a hydration nuisance term
+  that makes the dilution control meaningful.
 - **infradian-ref-s** — a reference checkpoint trained on synthetic data only (Apache-2.0).
 - **A frozen split manifest + SHA-256 checksums** so any lab holding its own mcPHASES DUA reproduces our
   exact splits and produces directly comparable numbers — while we redistribute *none* of the raw data.

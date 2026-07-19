@@ -19,19 +19,13 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    try:
-        from huggingface_hub import HfApi
-    except ImportError as e:
-        raise SystemExit("pip install huggingface_hub first") from e
-
-    api = HfApi()
     org = args.org
 
     plan = [
         ("dataset", f"{org}/infradian-synth-1k", [
-            ("data/tier_c/train-00000-of-00001.parquet", "data/train-00000-of-00001.parquet"),
-            ("data/tier_c/validation-00000-of-00001.parquet", "data/validation-00000-of-00001.parquet"),
-            ("data/tier_c/test-00000-of-00001.parquet", "data/test-00000-of-00001.parquet"),
+            ("datasets/infradian-synth-1k/data/train-00000-of-00001.parquet", "data/train-00000-of-00001.parquet"),
+            ("datasets/infradian-synth-1k/data/validation-00000-of-00001.parquet", "data/validation-00000-of-00001.parquet"),
+            ("datasets/infradian-synth-1k/data/test-00000-of-00001.parquet", "data/test-00000-of-00001.parquet"),
             ("deploy/hf/synth/README.md", "README.md"),
         ]),
         ("model", f"{org}/infradian-ref-s", [
@@ -41,13 +35,22 @@ def main() -> None:
         ]),
     ]
 
-    for repo_type, repo_id, files in plan:
-        print(f"\n== {repo_type}: {repo_id} ==")
-        if args.dry_run:
+    if args.dry_run:
+        for repo_type, repo_id, files in plan:
+            print(f"\n== {repo_type}: {repo_id} ==")
             for src, dst in files:
                 exists = "ok" if Path(src).exists() else "MISSING"
                 print(f"  [{exists}] {src} -> {dst}")
-            continue
+        return
+
+    try:
+        from huggingface_hub import HfApi
+    except ImportError as e:
+        raise SystemExit("pip install huggingface_hub first") from e
+    api = HfApi()
+
+    for repo_type, repo_id, files in plan:
+        print(f"\n== {repo_type}: {repo_id} ==")
         api.create_repo(repo_id, repo_type=repo_type, exist_ok=True)
         for src, dst in files:
             if not Path(src).exists():
