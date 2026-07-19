@@ -38,6 +38,14 @@ eval: ## Evaluate and write results JSON
 web-data: ## Export static JSON + generated TS types for the frontend
 	$(PY) scripts/export_web_data.py
 
+publish-hf: ## Mirror the dataset + model to HuggingFace (needs HF_TOKEN in env or .env)
+	@test -n "$(HF_ORG)" || { echo "usage: make publish-hf HF_ORG=<your-hf-username>"; exit 1; }
+	$(PY) scripts/publish_hf.py --org $(HF_ORG)
+
+publish-hf-check: ## Dry-run the HuggingFace publish (no auth, no upload)
+	@test -n "$(HF_ORG)" || { echo "usage: make publish-hf-check HF_ORG=<your-hf-username>"; exit 1; }
+	$(PY) scripts/publish_hf.py --org $(HF_ORG) --dry-run
+
 serve: ## Run the FastAPI backend locally
 	$(PY) -m uvicorn infradian.api.main:app --reload --port 8000
 

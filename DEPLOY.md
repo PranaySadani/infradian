@@ -32,14 +32,28 @@ make serve                                  # FastAPI on :8000  (header flips to
 cd web && npm run build && npx serve out -l 3210
 ```
 
-## 3. Dataset + model → HuggingFace
+## 3. Dataset + model → HuggingFace (optional)
+The dataset already ships in the repo at `datasets/infradian-synth-1k`, so this is a mirror, not a
+dependency.
+
+Supply a **write** token from https://huggingface.co/settings/tokens by any one of:
+
 ```bash
-pip install huggingface_hub
-huggingface-cli login             # paste a write token from hf.co/settings/tokens
-uv run python scripts/publish_hf.py --org <your-hf-org>
-# publishes: <org>/infradian-synth-1k (CC-BY parquet) and <org>/infradian-ref-s (Apache-2.0)
+export HF_TOKEN=hf_xxx                      # this shell only
+cp .env.example .env && $EDITOR .env        # persists; .env is gitignored AND hook-blocked
+huggingface-cli login                       # interactive
 ```
-The dataset viewer + Croissant metadata work automatically from the parquet layout.
+
+Then:
+```bash
+uv pip install huggingface_hub
+make publish-hf-check HF_ORG=<your-hf-username>   # verifies artifacts + token, uploads nothing
+make publish-hf       HF_ORG=<your-hf-username>   # publishes
+```
+Publishes `<org>/infradian-synth-1k` (CC-BY parquet) and `<org>/infradian-ref-s` (Apache-2.0).
+The dataset viewer and Croissant metadata work automatically from the parquet layout. The token is
+resolved from the environment or `.env`, never passed as a CLI argument, so it does not reach your
+shell history.
 
 ## 4. Backend (optional) → HuggingFace Space
 The demo does not need this (the frontend reads static JSON). To host the interactive API:

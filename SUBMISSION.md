@@ -205,13 +205,33 @@ Replace the bracketed parts with your own details.
 
 ## 7. Optional: mirror the artifacts to HuggingFace
 
-Not required, the dataset and model already ship in the repo. To mirror them:
+Not required. The dataset and model already ship in the repo, so the submission is complete without
+this. Mirroring just adds two more citable links.
+
+Get a **write** token from https://huggingface.co/settings/tokens, then pick one of three ways to
+supply it. The token is never passed as a command-line argument, so it stays out of your shell
+history and out of `ps`.
 
 ```bash
-pip install huggingface_hub
-huggingface-cli login          # paste a write token from hf.co/settings/tokens
-uv run python scripts/publish_hf.py --org <your-hf-username>
+uv pip install huggingface_hub
+
+# option 1: this shell only
+export HF_TOKEN=hf_xxx
+
+# option 2: persists, .env is gitignored and the pre-commit hook blocks it
+cp .env.example .env && $EDITOR .env        # set HF_TOKEN=hf_xxx
+
+# option 3: interactive login
+huggingface-cli login
 ```
 
-This creates `<you>/infradian-synth-1k` (CC-BY-4.0 parquet, dataset viewer works automatically) and
-`<you>/infradian-ref-s` (Apache-2.0 weights). Add both links to the submission if you do it.
+Then:
+
+```bash
+make publish-hf-check HF_ORG=<your-hf-username>   # verify artifacts + token, uploads nothing
+make publish-hf       HF_ORG=<your-hf-username>   # publish
+```
+
+This creates `<you>/infradian-synth-1k` (CC-BY-4.0 parquet, the dataset viewer works automatically)
+and `<you>/infradian-ref-s` (Apache-2.0 weights). Add `--private` to the script call if you want to
+inspect them before making them public. Add both links to the submission form if you do this.

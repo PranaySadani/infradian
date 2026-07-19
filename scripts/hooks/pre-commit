@@ -1,20 +1,46 @@
 #!/usr/bin/env bash
-# INFRADIAN privacy guard.
-# Blocks any commit that stages a file under data/raw/ (or any data/ payload).
-# mcPHASES is DUA-restricted; committing it would be a license violation.
+# INFRADIAN commit guard. Two jobs:
+#   1. Restricted data must never be committed (mcPHASES is under a PhysioNet DUA).
+#   2. Secrets must never be committed (.env files, key material, token-shaped strings).
+# Both are checked against the STAGED set, and both survive `git add -f`.
 set -euo pipefail
 
 staged=$(git diff --cached --name-only)
+fail=0
 
-# Block anything under data/ except the .gitkeep placeholder.
+# --- 1. restricted data -------------------------------------------------------
 offenders=$(echo "$staged" | grep -E '^data/' | grep -vE '^data/\.gitkeep$' || true)
-
 if [ -n "$offenders" ]; then
-    echo "ERROR: attempt to commit files under data/ — this is blocked." >&2
+    echo "BLOCKED: files under data/ are staged." >&2
     echo "mcPHASES is DUA-restricted (PhysioNet RHD License 1.5.0) and must never be committed." >&2
-    echo "Offending paths:" >&2
     echo "$offenders" | sed 's/^/  - /' >&2
-    exit 1
+    fail=1
 fi
 
+# --- 2. secret files ----------------------------------------------------------
+secret_files=$(echo "$staged" | grep -E '(^|/)\.env($|\.)|\.pem$|\.p12$|(^|/)id_rsa|(^|/)credentials$' \
+               | grep -vE '\.env\.example$' || true)
+if [ -n "$secret_files" ]; then
+    echo "BLOCKED: secret-bearing files are staged." >&2
+    echo "Use .env (gitignored) for tokens; commit .env.example with empty values instead." >&2
+    echo "$secret_files" | sed 's/^/  - /' >&2
+    fail=1
+fi
+
+# --- 3. token-shaped strings inside staged content ----------------------------
+# Catches a token pasted into a tracked file (README, notebook, script).
+# .env.example is exempt because it ships intentionally-empty keys.
+pattern='(hf_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16})'
+for f in $staged; do
+    case "$f" in
+        .env.example|scripts/hooks/pre-commit) continue ;;
+    esac
+    [ -f "$f" ] || continue
+    if git show ":$f" 2>/dev/null | grep -qE "$pattern"; then
+        echo "BLOCKED: $f contains something shaped like an API token." >&2
+        fail=1
+    fi
+done
+
+[ "$fail" -eq 0 ] || { echo "" >&2; echo "Commit aborted by scripts/hooks/pre-commit." >&2; exit 1; }
 exit 0
