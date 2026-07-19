@@ -22,6 +22,12 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT / "src") not in sys.path:
     sys.path.insert(0, str(ROOT / "src"))
 
+# Restated on every journal response. Structured severities and schema fields look clinical, and
+# a record that looks clinical should say what it is not.
+_DISCLAIMER = (
+    "Recorded as self-reported symptoms for cycle research. Not a diagnosis and not medical advice."
+)
+
 MAX_TEXT = 2000
 MAX_IMAGE_BYTES = 3_500_000  # Vercel caps the request body around 4.5MB
 MAX_AUDIO_BYTES = 3_500_000
@@ -63,9 +69,17 @@ def journal_extract(body: dict) -> tuple[int, dict]:
     # classifier at all, which turned the length limit itself into the bypass.
     category = guard.classify_refusal_deep(full)
     text = full[:MAX_TEXT]
+    # Truncation used to be silent, so symptoms written past the limit were dropped with no
+    # indication. In a health log the person has to be told that part of what they wrote was not read.
+    truncated = len(full) > MAX_TEXT
 
     # Extract regardless, so a refusal never silently destroys what the person actually logged.
     ex = extract(text, prefer_model=bool(body.get("use_model", True)) and not category)
+    if truncated:
+        ex.notes.append(
+            f"Entry was longer than {MAX_TEXT} characters. Only the first {MAX_TEXT} were read for "
+            "symptoms, so anything after that was not recorded."
+        )
 
     if category:
         # The symptoms still come back: someone writing "terrible cramps, should I take ibuprofen?"
@@ -77,7 +91,9 @@ def journal_extract(body: dict) -> tuple[int, dict]:
             "message": guard.REFUSAL_COPY[category],
             "text": ex.text,
             "vocab_version": ex.vocab_version,
+            "notes": ex.notes,
             "note": "The question was not answered. Symptoms you described were still recorded.",
+            "disclaimer": _DISCLAIMER,
             "symptoms": [
                 {
                     "code": s.code,
@@ -109,6 +125,7 @@ def journal_extract(body: dict) -> tuple[int, dict]:
             for s in ex.symptoms
         ],
         "schema_fields": ex.to_schema_fields(),
+        "disclaimer": _DISCLAIMER,
     }
 
 
@@ -204,8 +221,9 @@ def explain(body: dict) -> tuple[int, dict]:
             model_mae_days=float(body["model_mae_days"]),
             top_feature=str(body.get("top_feature", "the temperature CUSUM"))[:80],
         )
-    except (TypeError, ValueError) as e:
-        return 400, {"error": f"bad payload: {e}"}
+    except (TypeError, ValueError):
+        # The exception text is Python internals. The caller already knows which fields exist.
+        return 400, {"error": "one or more fields could not be read as a number"}
 
     # Physiological bounds. Without these, 1e308 rendered as a 309-digit number inside a calm
     # sentence, and -500 °C was asserted as this participant's measured temperature shift. A value

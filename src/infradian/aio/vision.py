@@ -135,8 +135,14 @@ def read_strip(image_data_uri: str) -> StripReading:
 
     try:
         obj = oai.vision_json(READ_SYSTEM, READ_USER, image_data_uri)
-    except oai.OpenAIUnavailable as e:
-        return StripReading(readable=False, reason=f"Vision unavailable ({e}).", source="unavailable")
+    except oai.OpenAIUnavailable:
+        # Upstream provider text can carry account, model and internal detail. Log-worthy, not
+        # user-facing.
+        return StripReading(
+            readable=False,
+            reason="The image reader is unavailable right now. Enter the value manually.",
+            source="unavailable",
+        )
 
     legibility = _legibility_copy(obj.get("legibility", ""))
 

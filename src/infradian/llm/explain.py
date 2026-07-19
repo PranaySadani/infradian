@@ -245,7 +245,9 @@ def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
     if unknown or free_nums:
         # The model broke the contract; fail closed to the deterministic template.
         exp = _template_explanation(p)
-        exp.warnings.append(f"llm violated grounding (unknown_slots={unknown}, free_numbers={free_nums})")
+        # Client-facing wording only. The previous message exposed internal variable names and
+        # the raw validator lists, which is debug output, not something a user can act on.
+        exp.warnings.append("model output failed the grounding check, used the deterministic template")
         return exp
 
     import re
