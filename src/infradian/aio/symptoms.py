@@ -267,8 +267,50 @@ def extract_with_openai(text: str) -> Extraction:
                 evidence=evidence_txt,
             )
         )
+    return _merge_with_deterministic(ex, text)
+
+
+def _merge_with_deterministic(ex: Extraction, text: str) -> Extraction:
+    """Union the model's codes with the deterministic extractor's, never replace them.
+
+    Found by red-teaming live production the moment a real API key was first configured. Until then
+    every request took the deterministic path, so this was structurally unreachable. With the key on,
+    the model path REPLACED the keyword extractor, and the model turned out to systematically miss
+    menses onset:
+
+        "period started today"  -> []                       (deterministic: SYM.BLEED.FLOW)
+        "on my period"          -> []                       (deterministic: SYM.BLEED.FLOW)
+        "my period started this morning and I have terrible cramps"
+                                -> [SYM.PAIN.CRAMP]         (dropped SYM.BLEED.FLOW)
+
+    Menses onset is the single most important event in a cycle log and the feature the benchmark
+    keys on (`days_since_last_observed_menses_onset`), so losing it is not a cosmetic recall dip.
+    Adding a capability must never remove one, so the deterministic result is now a guaranteed floor
+    and the model can only ever add to it. Severity takes the max of the two: both are estimates of
+    the same latent quantity, and in a health log the safer error is to over-record intensity rather
+    than silently downgrade what someone reported.
+    """
+    det = extract_deterministic(text)
+    by_code = {s.code: s for s in ex.symptoms}
+    added = []
+    for d in det.symptoms:
+        existing = by_code.get(d.code)
+        if existing is None:
+            by_code[d.code] = d
+            added.append(d.code)
+        else:
+            existing.severity = max(existing.severity, d.severity)
+            if not existing.evidence:
+                existing.evidence = d.evidence
+
+    # Preserve the deterministic vocabulary order so output is stable across runs.
+    order = {c.code: i for i, c in enumerate(CODES)}
+    ex.symptoms = sorted(by_code.values(), key=lambda s: order.get(s.code, 999))
+    if added:
+        ex.source = "openai+deterministic"
+        ex.notes.append(f"deterministic extractor recovered {len(added)} code(s) the model missed")
     if not ex.symptoms:
-        ex.notes.append("model returned no in-vocabulary codes")
+        ex.notes.append("no in-vocabulary symptoms found")
     return ex
 
 

@@ -88,7 +88,33 @@ is constrained structurally rather than by asking nicely:
 - **The vision reader returns a closed enum, not prose**, so it has nowhere to put a claim. It refuses
   qualitative two-line strips outright: reading one would mean inventing a number from line darkness,
   which is how a pregnancy test becomes a fake LH anchor.
-- **Refusal routing runs before any model call** for diagnosis, treatment and contraception.
+- **Refusal routing runs before any model call** for diagnosis, treatment and contraception, in two
+  layers (below).
+
+### The refusal gate is two layers, and the reason is worth stating
+
+A keyword matcher is the obvious way to build this and it is not sufficient. Red-teaming the live
+deployment produced the numbers: **24 of 40 contraception phrasings passed**, a single **Cyrillic
+`о`** in "PCОS" bypassed it entirely, Spanish, German, French, Tagalog and romanized Hindi were
+essentially unguarded, and an unsafe request placed after 2000 characters of filler was never seen
+at all, because the route truncated the text *before* classifying it. Enumerating phrasings is a
+losing game: the attacker picks the phrasing, and there are infinitely many.
+
+| Layer | What it is | Why it is there |
+|---|---|---|
+| 1 | Deterministic patterns over a confusables-folded, de-obfuscated form of the **whole** entry | Fast, offline, always available, cannot regress. Works with no API key. |
+| 2 | A model gate that judges **intent** rather than keywords | Generalises to paraphrase and to any language. Catches "which forty eight hours should we skip the raincoat". |
+
+Layer 1 splits every category into terms that **are** a request ("what should I take") and terms that
+merely name a **topic** ("metformin", "unprotected"). Topic terms refuse only alongside question
+framing, because the opposite failure is just as real: a journal has to let someone write *"took my
+metformin, felt nauseous"* or *"had unprotected sex last night"* without being told to consult a
+clinician about contraception. Layer 2 **fails open** to layer 1, so a provider outage degrades the
+system to its previous behaviour instead of blocking every entry.
+
+**A refusal never discards data.** Symptoms extracted from the entry are returned alongside it:
+someone writing *"terrible cramps, should I take ibuprofen?"* has logged a real symptom, and
+answering "I can't advise on medication" while binning the cramps is its own failure.
 
 > **The bug worth reading about.** The first refusal classifier was almost entirely inert. Truncated
 > stems were wrapped in a trailing `\b`, which can never match, because the character after

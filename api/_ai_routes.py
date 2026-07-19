@@ -51,23 +51,46 @@ def journal_extract(body: dict) -> tuple[int, dict]:
     from infradian.aio.symptoms import extract
     from infradian.llm import guard
 
-    text = str(body.get("text", "")).strip()[:MAX_TEXT]
-    if not text:
+    raw = body.get("text", "")
+    if not isinstance(raw, str):
+        return 400, {"error": "text must be a string"}
+    full = raw.strip()
+    if not full:
         return 400, {"error": "no text provided"}
 
-    # A journal entry is a description of how someone feels, not a question, but people ask
-    # questions in them anyway. Refuse before spending a model call.
-    category = guard.classify_refusal(text)
+    # The gate reads the WHOLE entry, then the entry is truncated for extraction. Doing it the other
+    # way round meant an unsafe request placed after 2000 characters of filler was never seen by the
+    # classifier at all, which turned the length limit itself into the bypass.
+    category = guard.classify_refusal_deep(full)
+    text = full[:MAX_TEXT]
+
+    # Extract regardless, so a refusal never silently destroys what the person actually logged.
+    ex = extract(text, prefer_model=bool(body.get("use_model", True)) and not category)
+
     if category:
+        # The symptoms still come back: someone writing "terrible cramps, should I take ibuprofen?"
+        # has logged a real symptom, and answering "I can't advise on medication" while binning the
+        # cramps is its own kind of failure. The question is declined; the observation is kept.
         return 200, {
             "refused": True,
             "category": category,
             "message": guard.REFUSAL_COPY[category],
-            "symptoms": [],
-            "schema_fields": {},
+            "text": ex.text,
+            "vocab_version": ex.vocab_version,
+            "note": "The question was not answered. Symptoms you described were still recorded.",
+            "symptoms": [
+                {
+                    "code": s.code,
+                    "label": s.label,
+                    "category": s.category,
+                    "severity": s.severity,
+                    "schema_field": s.schema_field,
+                    "evidence": s.evidence,
+                }
+                for s in ex.symptoms
+            ],
+            "schema_fields": ex.to_schema_fields(),
         }
-
-    ex = extract(text, prefer_model=bool(body.get("use_model", True)))
     return 200, {
         "refused": False,
         "text": ex.text,
@@ -146,20 +169,62 @@ def explain(body: dict) -> tuple[int, dict]:
     from infradian.llm.explain import ExplainPayload
     from infradian.llm.explain import explain as do_explain
 
+    # The measured quantities have no safe default. Silently substituting zeros produced a fluent,
+    # confidently worded explanation asserting "ovulation at day -1", "rank correlation of 0.00" and
+    # "off by 0.0 days versus 0.0 days for the calendar", stamped grounded:true with citations. Every
+    # number was technically traceable to the payload, which is exactly why this slipped through: the
+    # grounding contract guarantees a number came from the payload, not that the payload was real. An
+    # explanation of nothing must fail, not read like a result.
+    required = (
+        "rhr_delta_bpm",
+        "temp_delta_c",
+        "pdg_spearman",
+        "model_ovulation_day",
+        "calendar_mae_days",
+        "model_mae_days",
+    )
+    missing = [k for k in required if body.get(k) is None]
+    if missing:
+        return 400, {
+            "error": "missing measured values; this endpoint explains a real prediction and has no "
+            "defaults for them",
+            "missing": missing,
+            "hint": "obtain these from POST /predict/trajectory, or see the example in the README",
+        }
+
     try:
         payload = ExplainPayload(
             participant_id=str(body.get("participant_id", "user")),
             cycle_regularity=str(body.get("cycle_regularity", "regular")),
-            rhr_delta_bpm=float(body.get("rhr_delta_bpm", 2.5)),
-            temp_delta_c=float(body.get("temp_delta_c", 0.3)),
-            pdg_spearman=float(body.get("pdg_spearman", 0.0)),
-            model_ovulation_day=int(body.get("model_ovulation_day", -1)),
-            calendar_mae_days=float(body.get("calendar_mae_days", 0.0)),
-            model_mae_days=float(body.get("model_mae_days", 0.0)),
+            rhr_delta_bpm=float(body["rhr_delta_bpm"]),
+            temp_delta_c=float(body["temp_delta_c"]),
+            pdg_spearman=float(body["pdg_spearman"]),
+            model_ovulation_day=int(body["model_ovulation_day"]),
+            calendar_mae_days=float(body["calendar_mae_days"]),
+            model_mae_days=float(body["model_mae_days"]),
             top_feature=str(body.get("top_feature", "the temperature CUSUM"))[:80],
         )
     except (TypeError, ValueError) as e:
         return 400, {"error": f"bad payload: {e}"}
+
+    # Physiological bounds. Without these, 1e308 rendered as a 309-digit number inside a calm
+    # sentence, and -500 °C was asserted as this participant's measured temperature shift. A value
+    # being faithfully carried from the payload does not make it a possible measurement.
+    bounds = {
+        "rhr_delta_bpm": (-30.0, 30.0),
+        "temp_delta_c": (-3.0, 3.0),
+        "pdg_spearman": (-1.0, 1.0),
+        "model_ovulation_day": (0, 200),
+        "calendar_mae_days": (0.0, 200.0),
+        "model_mae_days": (0.0, 200.0),
+    }
+    for field, (lo, hi) in bounds.items():
+        v = getattr(payload, field if field != "model_ovulation_day" else "model_ovulation_day")
+        if not (lo <= v <= hi) or v != v:  # v != v catches NaN
+            return 400, {
+                "error": f"{field} is outside the plausible range [{lo}, {hi}]",
+                "value": v if v == v else "NaN",
+            }
 
     question = str(body.get("question", "")).strip()[:500] or None
     exp = do_explain(payload, question=question)

@@ -59,6 +59,57 @@ _SAFE_FEATURE_RE = re.compile(r"^[a-zA-Z0-9 ,\-]{1,60}$")
 _DEFAULT_FEATURE = "the temperature CUSUM"
 
 
+# Each slot renders WITH its unit already attached ("+2.5 bpm", "day 14"). A model told only the slot
+# names reasonably assumes the slot is a bare number and writes the unit itself, producing
+# "+2.5 bpm beats per minute" or "on day day 14". The system prompt now says so explicitly, but a
+# prompt instruction is a request, not a guarantee, so the renderer also repairs it. Discovered when a
+# real API key was first configured in production: until then every explanation took the deterministic
+# template path, where this could not occur.
+_REDUNDANT_AFTER = {
+    "rhr_delta": ("beats per minute", "beats/min", "bpm"),
+    "temp_delta": ("degrees celsius", "degrees c", "degrees", "celsius", "°c"),
+    "calendar_mae": ("days", "day"),
+    "model_mae": ("days", "day"),
+    "pdg_spearman": (),
+    "ovulation_day": (),
+    "cycle_regularity": (),
+    "top_feature": (),
+}
+# Slots whose rendered value already starts with a word the model tends to write ahead of it.
+_REDUNDANT_BEFORE = {"ovulation_day": ("day",)}
+
+
+def _dedupe_units(text: str, values: dict[str, str]) -> str:
+    """Remove a unit the model wrote next to a slot value that already carries it.
+
+    Deliberately narrow: a phrase is only removed when it sits immediately beside the exact rendered
+    value, so ordinary prose that happens to contain "days" is untouched.
+    """
+    for slot, phrases in _REDUNDANT_AFTER.items():
+        val = values.get(slot)
+        if not val:
+            continue
+        for phrase in phrases:  # longest first, so "degrees celsius" wins over "degrees"
+            text = re.sub(
+                rf"({re.escape(val)})\s+{re.escape(phrase)}\b",
+                r"\1",
+                text,
+                flags=re.IGNORECASE,
+            )
+    for slot, words in _REDUNDANT_BEFORE.items():
+        val = values.get(slot)
+        if not val:
+            continue
+        for word in words:
+            text = re.sub(
+                rf"\b{re.escape(word)}\s+({re.escape(val)})",
+                r"\1",
+                text,
+                flags=re.IGNORECASE,
+            )
+    return text
+
+
 def _slot_values(p: ExplainPayload) -> dict[str, str]:
     regularity = p.cycle_regularity if p.cycle_regularity in _ALLOWED_REGULARITY else "unknown"
     feature = p.top_feature if _SAFE_FEATURE_RE.match(p.top_feature or "") else _DEFAULT_FEATURE
@@ -66,11 +117,15 @@ def _slot_values(p: ExplainPayload) -> dict[str, str]:
     if any(ch.isdigit() for ch in feature):
         feature = _DEFAULT_FEATURE
 
+    # A sentinel must never reach prose. -1 means "no ovulation day was decided", and rendering that
+    # as "day -1" reads as a measurement rather than an absence.
+    ov = f"day {p.model_ovulation_day}" if p.model_ovulation_day >= 0 else "no confidently identified day"
+
     return {
         "rhr_delta": f"{p.rhr_delta_bpm:+.1f} bpm",
         "temp_delta": f"{p.temp_delta_c:+.2f} °C",
         "pdg_spearman": f"{p.pdg_spearman:.2f}",
-        "ovulation_day": f"day {p.model_ovulation_day}",
+        "ovulation_day": ov,
         "cycle_regularity": regularity,
         "calendar_mae": f"{p.calendar_mae_days:.1f} days",
         "model_mae": f"{p.model_mae_days:.1f} days",
@@ -95,7 +150,8 @@ def _template_explanation(p: ExplainPayload) -> Explanation:
     citations = ["temp_luteal", "rhr_luteal", "calendar_fails_irregular", "temp_lags_ovulation", "not_diagnostic"]
     # strip citation markers for slot check, then render
     slots = guard.SLOT_RE.findall(tmpl)
-    text = guard.render(_strip_citations(tmpl), _slot_values(p))
+    vals = _slot_values(p)
+    text = _dedupe_units(guard.render(_strip_citations(tmpl), vals), vals)
     return Explanation(
         text=text,
         citations=citations,
@@ -114,7 +170,9 @@ def _strip_citations(t: str) -> str:
 def explain(p: ExplainPayload, question: str | None = None, use_llm: bool | None = None) -> Explanation:
     """Produce a grounded explanation. Refuses disallowed questions before any model call."""
     if question:
-        cat = guard.classify_refusal(question)
+        # The deep gate, not the regex alone: a Cyrillic homoglyph in a condition name got this
+        # endpoint to answer a diagnosis question with a full clinical narrative.
+        cat = guard.classify_refusal_deep(question)
         if cat:
             return Explanation(
                 text=guard.REFUSAL_COPY[cat],
@@ -146,10 +204,20 @@ def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
 
     system = (PROMPT_DIR / "explain.system.v1.md").read_text()
     prompt_hash = hashlib.sha256(system.encode()).hexdigest()[:12]
-    slot_list = ", ".join(sorted(guard.KNOWN_SLOTS))
+    # Show the model what each slot RENDERS TO, not just its name. Given only names it assumes the
+    # slot is a bare number and writes the unit itself, which reads as "+2.5 bpm beats per minute".
+    vals = _slot_values(p)
+    slot_list = "\n".join(
+        f"  {{{{{k}}}}} renders to \"{vals[k]}\"" for k in sorted(guard.KNOWN_SLOTS)
+    )
+    # Interpolate the VALIDATED value, never the raw payload field. The allow-list was applied only
+    # at render time, so arbitrary caller text still reached the prompt and came back as
+    # model-authored clinical prose naming conditions, which the slot and digit checks cannot catch
+    # because they inspect the template rather than the values.
     user = (
-        f"Cycle regularity: {p.cycle_regularity}. Available slots you MUST use for every number: "
-        f"{slot_list}. Available evidence tags: {', '.join(evidence.EVIDENCE_BY_ID)}.\n"
+        f"Cycle regularity: {vals['cycle_regularity']}. You MUST use these slots for every number, and "
+        f"each one ALREADY CONTAINS ITS UNIT, so never write the unit yourself:\n{slot_list}\n"
+        f"Available evidence tags: {', '.join(evidence.EVIDENCE_BY_ID)}.\n"
         f"Write a 4–6 sentence explanation using ONLY {{{{slot}}}} placeholders for numbers and "
         f"[evidence_tag] markers for claims. Do NOT write any digits.\n"
     )
@@ -184,7 +252,8 @@ def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
 
     citations = re.findall(r"\[([a-z_]+)\]", template)
     slots = guard.SLOT_RE.findall(template)
-    text = guard.render(_strip_citations(template), _slot_values(p))
+    vals = _slot_values(p)
+    text = _dedupe_units(guard.render(_strip_citations(template), vals), vals)
     return Explanation(
         text=text,
         citations=[c for c in citations if c in evidence.EVIDENCE_BY_ID],

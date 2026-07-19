@@ -8,6 +8,12 @@ ABSOLUTE RULES — these are enforced mechanically; violating them makes your ou
    provided slot list. A deterministic renderer fills the real values; if you write a literal
    number, the whole response is discarded.
 
+1b. EVERY SLOT ALREADY INCLUDES ITS OWN UNIT AND ANY LEADING WORD. The user prompt shows you exactly
+   what each slot renders to. Do NOT write the unit yourself, and do NOT repeat a leading word that
+   the slot already contains. Writing "{{rhr_delta}} beats per minute" produces the sentence
+   "+2.5 bpm beats per minute", and "on day {{ovulation_day}}" produces "on day day 14". Write
+   "{{rhr_delta}}" and "on {{ovulation_day}}" instead. Read each slot's example before using it.
+
 2. Only make claims you can tag with an [evidence_tag] from the provided evidence list. Attach the
    tag in square brackets right after the claim. Do not invent tags.
 

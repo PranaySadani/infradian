@@ -155,6 +155,11 @@ class handler(BaseHTTPRequestHandler):  # noqa: N801 - Vercel requires this exac
         except json.JSONDecodeError:
             self._send(400, {"error": "invalid JSON body"})
             return
+        # `"hello"` and `[1,2]` are valid JSON but not objects, and every handler calls body.get(),
+        # so they raised AttributeError and surfaced as a 500 on all four POST routes.
+        if not isinstance(body, dict):
+            self._send(400, {"error": "body must be a JSON object"})
+            return
         status, payload = _route("POST", path, body)
         self._send(status, payload)
 

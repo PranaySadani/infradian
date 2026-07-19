@@ -85,7 +85,13 @@ def test_all_surfaces_work_without_a_key():
     _, audio = ai_routes.transcribe_audio({"audio_base64": "AAAA"})
     assert audio["available"] is False
 
-    _, exp = ai_routes.explain({"cycle_regularity": "irregular", "model_ovulation_day": 20})
+    # A full payload: the measured values have no defaults, because zeros rendered as a confident
+    # explanation of a prediction that was never made.
+    _, exp = ai_routes.explain({
+        "cycle_regularity": "irregular", "model_ovulation_day": 20,
+        "rhr_delta_bpm": 2.5, "temp_delta_c": 0.3, "pdg_spearman": 0.8,
+        "calendar_mae_days": 13.3, "model_mae_days": 4.4,
+    })
     assert exp["source"] == "template"
     assert exp["grounded"] is True
 
