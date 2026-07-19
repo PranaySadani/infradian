@@ -108,9 +108,17 @@ export function ExplorerClient({
             <Key color="var(--truth)" /> ground truth (urine assay) ·{" "}
             <Key color="var(--s-pdg)" /> model estimate · <Key color="var(--calendar)" dashed /> calendar.
             Shaded band = 90% prediction interval. Synthetic participant (CC-BY).
+            <br />
+            <span className="opacity-60">
+              The calendar drawn here is the naive fixed day-14 rule (b1a), because that is what a
+              period app actually shows you. Every skill number on /skill is scored against the much
+              stronger hierarchical hazard baseline (b1c), so these two figures are not comparable.
+            </span>
           </div>
           <div className="flex gap-10 ml-auto">
-            {calMae != null && <Metric tone="critical" value={calMae} label="calendar ovulation MAE" />}
+            {calMae != null && (
+              <Metric tone="critical" value={calMae} label="day-14 calendar MAE (b1a)" />
+            )}
             {modelMae != null && layers.has("model") && (
               <Metric tone="accent" value={modelMae} label="model ovulation MAE" />
             )}
@@ -124,7 +132,7 @@ export function ExplorerClient({
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <p className="eyebrow">Grounded explanation</p>
             <span className="px-3 py-1.5 rounded-pill bg-accent-dim text-accent text-[12px]">
-              {exp.nCited} of {exp.nCited} claims cited · 0 diagnostic claims · numbers never model-generated
+              {exp.nCited} of {exp.nCited} claims cited · 0 diagnostic claims · every number rendered from model output, not written by the model
             </span>
           </div>
           <p className="text-[15px] leading-[1.7] text-ink-secondary">{exp.text}</p>

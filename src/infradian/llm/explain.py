@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -48,16 +49,32 @@ class Explanation:
     warnings: list[str] = field(default_factory=list)
 
 
+# The two free-text slots are attacker-controlled if the endpoint is called directly, so they are
+# constrained here rather than trusted. Without this, a POST could put arbitrary medical prose into
+# `cycle_regularity` or `top_feature` and have it rendered back inside an explanation stamped
+# "grounded", with citations, on the deterministic path that needs no API key at all. The slot and
+# digit checks run on the model's TEMPLATE, never on substituted values, so they cannot catch it.
+_ALLOWED_REGULARITY = {"regular", "irregular", "highly irregular", "unknown"}
+_SAFE_FEATURE_RE = re.compile(r"^[a-zA-Z0-9 ,\-]{1,60}$")
+_DEFAULT_FEATURE = "the temperature CUSUM"
+
+
 def _slot_values(p: ExplainPayload) -> dict[str, str]:
+    regularity = p.cycle_regularity if p.cycle_regularity in _ALLOWED_REGULARITY else "unknown"
+    feature = p.top_feature if _SAFE_FEATURE_RE.match(p.top_feature or "") else _DEFAULT_FEATURE
+    # A caller cannot smuggle digits in through the feature name either.
+    if any(ch.isdigit() for ch in feature):
+        feature = _DEFAULT_FEATURE
+
     return {
         "rhr_delta": f"{p.rhr_delta_bpm:+.1f} bpm",
         "temp_delta": f"{p.temp_delta_c:+.2f} °C",
         "pdg_spearman": f"{p.pdg_spearman:.2f}",
         "ovulation_day": f"day {p.model_ovulation_day}",
-        "cycle_regularity": p.cycle_regularity,
+        "cycle_regularity": regularity,
         "calendar_mae": f"{p.calendar_mae_days:.1f} days",
         "model_mae": f"{p.model_mae_days:.1f} days",
-        "top_feature": p.top_feature,
+        "top_feature": feature,
     }
 
 
@@ -136,8 +153,10 @@ def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
         f"Write a 4–6 sentence explanation using ONLY {{{{slot}}}} placeholders for numbers and "
         f"[evidence_tag] markers for claims. Do NOT write any digits.\n"
     )
-    if question:
-        user += f"The user asked: {question!r}. Answer only if it is a non-diagnostic question about the estimate.\n"
+    # The user's question is deliberately NOT interpolated into the prompt. Output validation only
+    # checks slot names and digits, so a digit-free medical sentence would render verbatim under a
+    # "grounded" badge. Disallowed questions are refused upstream; allowed ones do not change what
+    # the explanation should say, because it is fully determined by the payload.
 
     # JSON-constrained so the slot template comes back in a single predictable field.
     user += '\nReturn JSON: {"explanation": "<the slot-and-tag prose>"}'

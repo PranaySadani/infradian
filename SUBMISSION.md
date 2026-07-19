@@ -4,7 +4,7 @@ Everything below is ready to paste into the Hack-Nation submission form.
 
 ---
 
-## 1. Project Summary (238 words)
+## 1. Project Summary (287 words)
 
 Everyone knows the circadian rhythm. Almost nobody can name the infradian one, the roughly 28-day
 endocrine cycle that shapes temperature, heart rate, sleep and metabolism for half the planet. Every
@@ -19,14 +19,21 @@ named metric (Skill over Calendar), participant-disjoint splits, and a causality
 tests rather than asserted in prose. The calendar baseline is deliberately strong, an empirical-Bayes
 hazard model, so a win means something.
 
-We ran it on real clinical data (mcPHASES, 42 participants, 192 cycles) and on a CC-BY synthetic
-cohort we generated so anyone can reproduce every number with no data-use agreement. On synthetic
+I ran it on real clinical data (mcPHASES, 42 participants, 192 cycles) and on a CC-BY synthetic
+cohort I generated so anyone can reproduce every number with no data-use agreement. On synthetic
 data the model beats the calendar exactly where the calendar fails, irregular cycles, by 0.40 skill.
 On real consumer wearables the pre-registered primary endpoint is a null, p equals 0.48. That gap is
-the finding, and we lead with it.
+the finding, and I lead with it.
+
+A multimodal layer closes the loop from a person to the benchmark. Free-text or spoken journal
+entries are mapped to INFRADIAN-SYM, a 17-code open symptom vocabulary, and a photo of an at-home
+hormone test is transcribed into a numeric anchor for the inferred curve. Every model surface is
+guarded: refusals for diagnosis, treatment and contraception run before any model call, the vision
+reader returns a closed enum rather than prose, and explanations are rendered from typed slots so a
+hallucinated number is structurally impossible. Forty-one red-team regression tests hold that line.
 
 Shipped: benchmark spec, harness, synthetic dataset, reference checkpoint, split manifest for gated
-data, a grounded explanation layer that cannot hallucinate a number, and a live app.
+data, the multimodal intake layer, and a live app.
 
 ---
 
@@ -43,13 +50,14 @@ data, a grounded explanation layer that cannot hallucinate a number, and a live 
 
 ## 3. Demo Video script (about 3 minutes)
 
-Open five tabs first so you never click through navigation on camera:
-`/`, `/explorer` (select S003, all three layers on), `/skill`, `/methods`, and the GitHub repo.
+Open six tabs first so you never click through navigation on camera:
+`/`, `/explorer` (select S003, all three layers on), `/skill`, `/journal`, `/impact`, `/methods`,
+and the GitHub repo.
 
 **[0:00 to 0:20] Landing page**
 
 > Everyone knows the circadian rhythm. Almost nobody can name the infradian one, the 28-day cycle
-> that half the planet runs on. Every period app on earth predicts it with calendar arithmetic. We
+> that half the planet runs on. Every period app on earth predicts it with calendar arithmetic. I
 > built the benchmark that measures whether a consumer wearable can actually do better, and exactly
 > where it cannot.
 
@@ -60,7 +68,7 @@ Open five tabs first so you never click through navigation on camera:
 > the ovulation row, the hollow calendar markers miss the true ovulation markers by days, every
 > single cycle. That error is 7.5 days for this person.
 
-**[0:50 to 1:25] Toggle the model layer on**
+**[0:50 to 1:20] Toggle the model layer on**
 
 > Same participant, same days, one consumer smartwatch.
 
@@ -69,32 +77,46 @@ Open five tabs first so you never click through navigation on camera:
 > The model reconstructs the hormone curves from wearable signals with calibrated uncertainty bands,
 > and its ovulation markers land within a couple of days of truth. Error drops from 7.5 days to 5.0.
 
-**[1:25 to 2:00] Skill page**
+**[1:20 to 1:50] Skill page**
 
-> Here is the honest version. We built the strongest calendar baseline we could, an empirical-Bayes
-> hazard model, not a fixed day-14 strawman, and we made it the denominator on purpose. On the
+> Here is the honest version. I built the strongest calendar baseline I could, an empirical-Bayes
+> hazard model, not a fixed day-14 strawman, and I made it the denominator on purpose. On the
 > synthetic cohort the gain is concentrated exactly where the calendar fails: plus 0.40 skill on
 > irregular cycles, near zero on regular ones. And on real consumer wearables, the pre-registered
-> primary endpoint is a null. P equals 0.48. We are showing you our own negative result, on the
+> primary endpoint is a null. P equals 0.48. I am showing you my own negative result, on the
 > results page, as the headline.
 
-**[2:00 to 2:30] Explanation panel, then click the unsafe question**
+**[1:50 to 2:20] Journal page, the multimodal layer**
 
-> The explanation is grounded by construction. The language model is never allowed to emit a digit.
-> It writes prose with typed slots, and our code fills every number from the model output, so a
-> hallucinated figure is structurally impossible, not just unlikely. Every claim carries a citation
-> chip. And when you ask it to diagnose you, watch what happens.
+> A benchmark is only useful if a real person can feed it. So this page takes whatever someone
+> actually has. Type or speak an entry in plain language.
 
-*(Click "Do I have PCOS?")*
+*(Type or dictate: "Really bad cramps today and I barely slept.")*
 
-> It refuses, and points you to a clinician.
+> That maps to INFRADIAN-SYM, an open seventeen-code symptom vocabulary, so free text becomes
+> benchmark-shaped columns. You can also photograph an at-home hormone test and it transcribes the
+> printed number into an anchor for the inferred curve. It refuses to read a two-line strip, because
+> reading one would mean inventing a number from how dark a line looks.
 
-**[2:30 to 3:00] Methods page, then GitHub**
+**[2:20 to 2:40] The explanation panel, then the unsafe question**
+
+> Every explanation is grounded by construction. The language model is never allowed to emit a digit.
+> It writes prose with typed slots, my code fills every number from the model output, so a
+> hallucinated figure is structurally impossible, not just unlikely. And when you ask it to diagnose
+> you, or to use this as contraception, watch what happens.
+
+*(Click "Do I have PCOS?", then type a contraception question.)*
+
+> It refuses both, and points you to a clinician. I want to be honest about that: my first version of
+> this classifier had a regex bug that made it almost entirely inert. An adversarial review of my own
+> code caught it. It is now forty-one regression tests.
+
+**[2:40 to 3:00] Methods page, then GitHub**
 
 > Forty-two Canadian participants, ages 18 to 29. This says nothing about menopause or PCOS
-> populations, and we do not pretend otherwise. The clinical data is DUA-restricted so we redistribute
-> none of it, only checksums and hashed split IDs. The only checkpoint we can legally publish is
-> trained on our synthetic cohort, so we made that cohort good enough to run the whole benchmark on,
+> populations, and I do not pretend otherwise. The clinical data is DUA-restricted so I redistribute
+> none of it, only checksums and hashed split IDs. The only checkpoint I can legally publish is
+> trained on my synthetic cohort, so I made that cohort good enough to run the whole benchmark on,
 > and then measured exactly how much skill it keeps on real data. Everything is open. Take it, and
 > beat it.
 
@@ -107,50 +129,63 @@ Have the repo open, plus a terminal, plus `/skill`.
 **[0:00 to 0:25] The architecture in one breath**
 
 > Three tiers, driven by licensing. Tier A is NHANES, US public domain. Tier B is mcPHASES, clinical
-> wearable and hormone data under a restricted PhysioNet license. Tier C is a synthetic cohort we
-> generate ourselves. That licensing constraint drove the entire architecture, and I will show you
+> wearable and hormone data under a restricted PhysioNet license. Tier C is a synthetic cohort I
+> generate myself. That licensing constraint drove the entire architecture, and I will show you
 > why that turned out to be the most interesting part.
 
 **[0:25 to 1:00] Synthetic-first, and why**
 
-> We could not redistribute mcPHASES, and a model trained on it is a legal grey zone. So we built
+> I could not redistribute mcPHASES, and a model trained on it is a legal grey zone. So I built
 > everything against a synthetic cohort first: literature-shaped hormone curves coupled to wearable
-> channels through effect-size ranges we verified against primary papers. That single decision turned
-> the restricted dataset from a critical-path dependency into a leaf node. It also gave us a
-> leakage-free hyperparameter tuning set, because we tune on synthetic and evaluate on real.
+> channels through effect-size ranges I verified against primary papers. That single decision turned
+> the restricted dataset from a critical-path dependency into a leaf node. It also gave me a
+> leakage-free hyperparameter tuning set, because I tune on synthetic and evaluate on real.
 >
 > One detail worth flagging: an early draft used a resting-heart-rate shift of 8 beats per minute and
 > an SDNN heart-rate-variability figure. Both were wrong. The real luteal shift is 2 to 4 bpm, and
-> wearables report RMSSD, not SDNN. We caught it, documented the rejected numbers in
+> wearables report RMSSD, not SDNN. I caught it, documented the rejected numbers in
 > `docs/effect_sizes.md`, and every magnitude in the generator now traces to a primary table.
 
 **[1:00 to 1:45] The rigor that is actually enforced**
 
 > Leakage control is mechanical, not aspirational. Every feature passes a future-perturbation test:
-> we corrupt all data after day t, recompute, and assert the feature at day t is unchanged. Splits are
+> I corrupt all data after day t, recompute, and assert the feature at day t is unchanged. Splits are
 > participant-disjoint, and the 20 participants who appear in two study rounds are grouped by identity
 > so they can never straddle a fold.
 >
-> We pre-registered one primary endpoint and committed it to git before running anything on real
+> I pre-registered one primary endpoint and committed it to git before running anything on real
 > data. You can verify the ordering in the commit history. Everything else out of roughly a hundred
-> metric cells is labelled exploratory, so we cannot cherry-pick a lucky one.
+> metric cells is labelled exploratory, so I cannot cherry-pick a lucky one.
 >
 > And there is a negative control. The urinary hormone assay is not creatinine-normalized, so
-> hydration contaminates it, and hydration is predictable from the same wearable features. We predict
+> hydration contaminates it, and hydration is predictable from the same wearable features. I predict
 > progesterone using only follicular days, where the true value is flat. On real data that comes out
-> at 0.02, so the signal we report is not a hydration artifact.
+> at 0.02, so the signal I report is not a hydration artifact.
 
-**[1:45 to 2:20] The model and the LLM layer**
+**[1:45 to 2:20] The model, the multimodal layer, and what guards it**
 
 > The model is deliberately boring: LightGBM with shallow trees and strong regularization, because
 > with 42 participants overfitting is the dominant risk. A median filter plus one-argmax-per-cycle
 > decoder turns per-day phase probabilities into a single ovulation day.
 >
-> The explanation layer is the part I would defend hardest. The language model never emits a digit.
-> It returns prose containing typed slots, our renderer substitutes values from the model output, and
-> a verifier rejects any stray numeral. Hallucinated numbers are structurally impossible. There is a
-> refusal classifier for diagnosis, treatment and contraception questions, and a red-team eval that
-> ships in the repo at 12 out of 12.
+> On top of that sits a multimodal intake layer. You can type or speak a journal entry and it maps to
+> INFRADIAN-SYM, a seventeen-code open symptom vocabulary, so free text becomes benchmark-shaped
+> columns. You can photograph an at-home hormone test and it is transcribed into a numeric anchor for
+> the inferred curve.
+>
+> That layer is the part I would defend hardest, because every one of those surfaces is a place a
+> model could say something unsafe. Explanations never contain a model-written digit: the model emits
+> typed slots, my renderer substitutes values, and a verifier rejects any stray numeral. The vision
+> reader returns a closed enum instead of prose, so it has nowhere to put a claim. A refusal
+> classifier for diagnosis, treatment and contraception runs before any model call.
+>
+> I want to be specific about how I know that holds. An adversarial review of my own code found that
+> my first refusal classifier was almost entirely inert: I had wrapped truncated word stems in a
+> trailing word boundary, which can never match, and nine of ten unsafe probes walked straight
+> through, including the exact contraception question this demo shows being blocked. My tests missed
+> it because every case I had written happened to use a convenient whole word. That bug is now
+> forty-one red-team regression tests, and they assert on what must be allowed as well as what must be
+> refused, because a guard that refuses everything is broken in the other direction.
 
 **[2:20 to 3:00] Stack, and the result**
 

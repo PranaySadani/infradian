@@ -144,13 +144,18 @@ def test_extraction_falls_back_when_model_unavailable(monkeypatch, fake_key):
 # --- vision safety ---------------------------------------------------------------------
 
 def test_vision_strips_interpretive_language(monkeypatch, fake_key):
-    """The reader transcribes. If the model editorialises, that text must not reach the user."""
+    """The reader transcribes. If the model editorialises, that text must not reach the user.
+
+    Since the red-team pass, `legibility` is a closed enum rather than a free-text `reason`, so
+    an interpretive sentence has nowhere to travel: it falls back to fixed copy.
+    """
     monkeypatch.setattr(
         oai,
         "vision_json",
         lambda *a, **k: {
-            "readable": True, "analyte": "LH", "value": 42.0, "unit": "mIU/mL",
-            "confidence": 0.9, "reason": "This is a positive LH surge, you are likely ovulating",
+            "readable": True, "device_class": "quantitative_readout", "analyte": "LH",
+            "analyte_text_verbatim": "LH", "value": 42.0, "unit": "mIU/mL", "confidence": 0.4,
+            "legibility": "This is a positive LH surge, you are likely ovulating",
         },
     )
     r = vision.read_strip("data:image/jpeg;base64,AAAA")
@@ -165,7 +170,11 @@ def test_vision_rejects_implausible_values(monkeypatch, fake_key):
     monkeypatch.setattr(
         oai,
         "vision_json",
-        lambda *a, **k: {"readable": True, "analyte": "LH", "value": 99999, "confidence": 0.9},
+        lambda *a, **k: {
+            "readable": True, "device_class": "quantitative_readout", "analyte": "LH",
+            "analyte_text_verbatim": "LH", "value": 99999, "confidence": 0.9,
+            "legibility": "clear",
+        },
     )
     r = vision.read_strip("data:image/jpeg;base64,AAAA")
     assert r.readable is False
@@ -176,7 +185,11 @@ def test_vision_rejects_unsupported_analyte(monkeypatch, fake_key):
     monkeypatch.setattr(
         oai,
         "vision_json",
-        lambda *a, **k: {"readable": True, "analyte": "GLUCOSE", "value": 5.5, "confidence": 0.9},
+        lambda *a, **k: {
+            "readable": True, "device_class": "quantitative_readout", "analyte": "GLUCOSE",
+            "analyte_text_verbatim": "GLUCOSE", "value": 5.5, "confidence": 0.9,
+            "legibility": "clear",
+        },
     )
     assert vision.read_strip("data:image/jpeg;base64,AAAA").readable is False
 

@@ -19,6 +19,7 @@ Two extraction paths, and both are real:
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 VOCAB_VERSION = "INFRADIAN-SYM v1.0"
@@ -58,7 +59,9 @@ CODES: list[SymptomCode] = [
                 ("period", "bleeding", "menstruating", "on my period", "flow", "spotting")),
     SymptomCode("SYM.BLEED.CLOTS", "Clotting", "bleeding", None, ("clots", "clotting")),
     SymptomCode("SYM.MOOD.LOW", "Low mood", "mood", "mood",
-                ("low", "sad", "down", "depressed", "tearful", "crying", "miserable", "blue")),
+                # "low" alone is not here on purpose: as a substring it fires on "lower back",
+                # which would infer a mood state from a back complaint.
+                ("feeling low", "low mood", "sad", "depressed", "tearful", "crying", "miserable")),
     SymptomCode("SYM.MOOD.IRRITABLE", "Irritability", "mood", "mood",
                 ("irritable", "irritated", "snappy", "angry", "rage", "short tempered", "annoyed")),
     SymptomCode("SYM.MOOD.ANXIOUS", "Anxiety", "mood", "stress",
@@ -169,7 +172,10 @@ def extract_deterministic(text: str) -> Extraction:
 
     for code in CODES:
         for term in code.terms:
-            idx = low.find(term)
+            # Word-boundary match, not a raw substring: "down" must not fire inside "download",
+            # and "spots" must not fire inside "spotscan".
+            m = re.search(rf"(?<!\w){re.escape(term)}(?!\w)", low)
+            idx = m.start() if m else -1
             if idx < 0 or code.code in seen:
                 continue
             if _is_negated(low, idx):
@@ -246,6 +252,11 @@ def extract_with_openai(text: str) -> Extraction:
         sev = max(0, min(4, sev))
         if sev == 0:
             continue
+        # `evidence` is displayed to the user, so it must genuinely be their own words. Anything
+        # the model authored is dropped rather than echoed: this was an open channel for a
+        # diagnostic sentence to ride out alongside perfectly valid codes.
+        raw_ev = str(item.get("evidence", ""))[:160].strip()
+        evidence_txt = raw_ev if raw_ev and raw_ev.lower() in text.lower() else ""
         ex.symptoms.append(
             ExtractedSymptom(
                 code=spec.code,
@@ -253,7 +264,7 @@ def extract_with_openai(text: str) -> Extraction:
                 category=spec.category,
                 severity=sev,
                 schema_field=spec.schema_field,
-                evidence=str(item.get("evidence", ""))[:160],
+                evidence=evidence_txt,
             )
         )
     if not ex.symptoms:
