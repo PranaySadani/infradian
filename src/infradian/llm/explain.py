@@ -120,7 +120,12 @@ def explain(p: ExplainPayload, question: str | None = None, use_llm: bool | None
 
 
 def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
-    from openai import OpenAI
+    """Model-backed path.
+
+    Uses the stdlib OpenAI client rather than the official SDK so that this exact function runs
+    unchanged inside the 500MB Vercel serverless bundle as well as in the Docker backend.
+    """
+    from infradian.aio import openai_client as oai
 
     system = (PROMPT_DIR / "explain.system.v1.md").read_text()
     prompt_hash = hashlib.sha256(system.encode()).hexdigest()[:12]
@@ -134,15 +139,19 @@ def _llm_explanation(p: ExplainPayload, question: str | None) -> Explanation:
     if question:
         user += f"The user asked: {question!r}. Answer only if it is a non-diagnostic question about the estimate.\n"
 
-    client = OpenAI()
-    resp = client.chat.completions.create(
-        model=os.environ.get("INFRADIAN_LLM_MODEL", MODEL),
-        messages=[{"role": "system", "content": system + "\n\nEVIDENCE:\n" + evidence.as_context()},
-                  {"role": "user", "content": user}],
+    # JSON-constrained so the slot template comes back in a single predictable field.
+    user += '\nReturn JSON: {"explanation": "<the slot-and-tag prose>"}'
+
+    obj = oai.chat_json(
+        system + "\n\nEVIDENCE:\n" + evidence.as_context(),
+        user,
+        model=os.environ.get("INFRADIAN_LLM_MODEL") or None,
         temperature=0.2,
-        max_tokens=350,
+        max_tokens=450,
     )
-    template = resp.choices[0].message.content or ""
+    template = str(obj.get("explanation", "")).strip()
+    if not template:
+        raise ValueError("model returned no explanation field")
 
     unknown = guard.verify_slots_known(template)
     free_nums = guard.verify_no_free_numbers(template)

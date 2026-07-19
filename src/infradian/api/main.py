@@ -10,6 +10,7 @@ serves predictions through the SAME feature transform used in training, guarante
 from __future__ import annotations
 
 import json
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -137,6 +138,63 @@ def leaderboard() -> list[dict]:
     if p.exists():
         return json.loads(p.read_text())
     return []
+
+
+# --- multimodal AI surfaces -------------------------------------------------------------
+# Same handlers the Vercel function mounts, so the two deployments cannot diverge in behaviour.
+# They live in api/_ai_routes.py and take/return plain dicts, so no framework coupling.
+_AI_DIR = Path(__file__).resolve().parents[3] / "api"
+if str(_AI_DIR) not in sys.path:
+    sys.path.insert(0, str(_AI_DIR))
+
+
+def _ai():
+    import _ai_routes
+
+    return _ai_routes
+
+
+@app.get("/ai/status")
+def ai_status() -> dict:
+    return _ai().ai_status()[1]
+
+
+@app.get("/ai/vocabulary")
+def ai_vocabulary() -> dict:
+    """The published INFRADIAN-SYM symptom vocabulary."""
+    return _ai().symptom_vocabulary()[1]
+
+
+@app.post("/llm/journal")
+def llm_journal(body: dict) -> dict:
+    status, payload = _ai().journal_extract(body)
+    if status >= 400:
+        raise HTTPException(status, payload.get("error", "bad request"))
+    return payload
+
+
+@app.post("/llm/transcribe")
+def llm_transcribe(body: dict) -> dict:
+    status, payload = _ai().transcribe_audio(body)
+    if status >= 400:
+        raise HTTPException(status, payload.get("error", "bad request"))
+    return payload
+
+
+@app.post("/llm/read-strip")
+def llm_read_strip(body: dict) -> dict:
+    status, payload = _ai().read_test_strip(body)
+    if status >= 400:
+        raise HTTPException(status, payload.get("error", "bad request"))
+    return payload
+
+
+@app.post("/llm/explain")
+def llm_explain(body: dict) -> dict:
+    status, payload = _ai().explain(body)
+    if status >= 400:
+        raise HTTPException(status, payload.get("error", "bad request"))
+    return payload
 
 
 @app.get("/synthetic/sample")

@@ -4,7 +4,9 @@ import { ApiStatus } from "./ApiStatus";
 const NAV = [
   { href: "/", label: "Thesis" },
   { href: "/explorer", label: "Explorer" },
+  { href: "/journal", label: "Journal" },
   { href: "/skill", label: "Result" },
+  { href: "/impact", label: "Impact" },
   { href: "/methods", label: "Methods" },
 ];
 

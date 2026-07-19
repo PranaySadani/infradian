@@ -85,6 +85,7 @@ def _predict(body: dict) -> tuple[int, dict]:
 
 def _route(method: str, path: str, body: dict) -> tuple[int, dict]:
     path = path.rstrip("/") or "/"
+
     if path.endswith("/healthz"):
         return _healthz()
     if path.endswith("/model"):
@@ -93,6 +94,35 @@ def _route(method: str, path: str, body: dict) -> tuple[int, dict]:
         if method != "POST":
             return 405, {"error": "use POST"}
         return _predict(body)
+
+    # --- multimodal AI surfaces. Imported lazily so a failure here can never stop the core
+    # prediction API from serving. ---
+    try:
+        import _ai_routes as ai
+    except Exception as e:  # noqa: BLE001
+        return 503, {"error": f"AI routes unavailable: {type(e).__name__}: {e}"}
+
+    if path.endswith("/ai/status"):
+        return ai.ai_status()
+    if path.endswith("/ai/vocabulary"):
+        return ai.symptom_vocabulary()
+    if path.endswith("/llm/journal"):
+        if method != "POST":
+            return 405, {"error": "use POST"}
+        return ai.journal_extract(body)
+    if path.endswith("/llm/transcribe"):
+        if method != "POST":
+            return 405, {"error": "use POST"}
+        return ai.transcribe_audio(body)
+    if path.endswith("/llm/read-strip"):
+        if method != "POST":
+            return 405, {"error": "use POST"}
+        return ai.read_test_strip(body)
+    if path.endswith("/llm/explain"):
+        if method != "POST":
+            return 405, {"error": "use POST"}
+        return ai.explain(body)
+
     return 404, {"error": f"no route for {path}"}
 
 

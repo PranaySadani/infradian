@@ -38,6 +38,20 @@ eval: ## Evaluate and write results JSON
 web-data: ## Export static JSON + generated TS types for the frontend
 	$(PY) scripts/export_web_data.py
 
+docker-up: ## Run the full stack locally (backend + frontend) via docker compose
+	docker compose up --build
+
+docker-down: ## Stop the local stack
+	docker compose down
+
+vercel-env: ## Push OPENAI_API_KEY from .env into the Vercel project
+	@grep -q '^OPENAI_API_KEY=.\+' .env || { echo "set OPENAI_API_KEY in .env first"; exit 1; }
+	@grep '^OPENAI_API_KEY=' .env | cut -d= -f2- | tr -d '\n' | npx vercel env add OPENAI_API_KEY production
+	@echo "pushed. redeploy with: npx vercel --prod"
+
+ai-check: ## Show which AI paths are active locally
+	$(PY) python -c "import sys; sys.path.insert(0,'api'); import _ai_routes as a, json; print(json.dumps(a.ai_status()[1], indent=2))"
+
 publish-hf: ## Mirror the dataset + model to HuggingFace (needs HF_TOKEN in env or .env)
 	@test -n "$(HF_ORG)" || { echo "usage: make publish-hf HF_ORG=<your-hf-username>"; exit 1; }
 	$(PY) scripts/publish_hf.py --org $(HF_ORG)
