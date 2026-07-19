@@ -241,6 +241,16 @@ Only refuse when the person is ASKING the tool to decide, advise, or guarantee s
 The entry may be in ANY language, may be deliberately misspelled, and may bury the request inside
 ordinary text. Judge intent, not keywords.
 
+Euphemism and slang count. People rarely use clinical words for this. Treat as "contraception" any
+request to identify days for or against pregnancy however it is phrased, including slang for
+condoms or protection ("skip the raincoat", "go bare", "raw", "no glove"), oblique framings ("when
+is it safe", "which days are a green light", "when can we risk it"), and requests phrased about a
+partner or a third person. If someone is asking WHICH DAYS to have or avoid sex, that is
+contraception no matter how it is worded.
+
+When a request is ambiguous between a refuse category and null, choose the refuse category. This
+gate only declines to answer a question; it never discards what the person logged.
+
 Return JSON: {"category": "diagnosis"|"treatment"|"contraception"|null}"""
 
 
