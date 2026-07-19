@@ -59,7 +59,47 @@ than a suspicious win.**
   exact splits and produces directly comparable numbers, while we redistribute *none* of the raw data.
 - **A grounded LLM explanation layer** whose numbers are impossible to hallucinate by construction, with
   a refusal layer and a shipped eval.
+- **[INFRADIAN-SYM](src/infradian/aio/symptoms.py)**: a 17-code open symptom vocabulary that maps free
+  text and speech onto the canonical schema, so a person's own words become benchmark-shaped columns.
 - **A live app** (`web/`) and a **FastAPI backend** wired to the reference model.
+
+---
+
+## The multimodal intake layer
+
+A benchmark is only useful if a real person can feed it. Three modalities, all optional, all with a
+deterministic fallback so **the entire app works with no API key**:
+
+| Modality | Route | What it does | Fallback with no key |
+|---|---|---|---|
+| Text | `POST /api/llm/journal` | Maps an entry to INFRADIAN-SYM codes + severity | Deterministic keyword extractor |
+| Speech | `POST /api/ai/transcribe` | Whisper, then the same text path | Browser `SpeechRecognition` |
+| Image | `POST /api/ai/read-strip` | Transcribes a **printed number** from an at-home hormone test into an anchor for the inferred curve | Manual numeric entry |
+
+Set your key in `.env` (`OPENAI_API_KEY=sk-...`; see `.env.example`). It is gitignored *and* blocked by
+the pre-commit hook.
+
+**What guards it.** Every one of those surfaces is a place a model could say something unsafe, so each
+is constrained structurally rather than by asking nicely:
+
+- **Explanations contain no model-written digit.** The model emits typed `{{slots}}`; Python substitutes
+  values from the payload. The two free-text payload fields are validated against an allow-list, because
+  they are attacker-controlled on the deterministic path that needs no key at all.
+- **The vision reader returns a closed enum, not prose**, so it has nowhere to put a claim. It refuses
+  qualitative two-line strips outright: reading one would mean inventing a number from line darkness,
+  which is how a pregnancy test becomes a fake LH anchor.
+- **Refusal routing runs before any model call** for diagnosis, treatment and contraception.
+
+> **The bug worth reading about.** The first refusal classifier was almost entirely inert. Truncated
+> stems were wrapped in a trailing `\b`, which can never match, because the character after
+> `contracept` in `contraception` is a word character. Nine of ten unsafe probes passed, including
+> the exact contraception question the demo shows being blocked, and the unit tests missed it because
+> every case happened to use a convenient whole word like "birth control". An adversarial review of
+> this repo found it. The fix and its 41 regression tests are in
+> [`tests/test_safety_redteam.py`](tests/test_safety_redteam.py); the history is kept deliberately in
+> the [`guard.py`](src/infradian/llm/guard.py) docstring. Those tests assert on what must be **allowed**
+> as well as what must be refused, because a guard that rejects "I have PCOS and my cramps are bad
+> today" is not safe, it silently discards a clinically meaningful entry.
 
 ---
 
@@ -71,7 +111,7 @@ make setup            # create the environment + install the git privacy hook
 make synth            # generate INFRADIAN-SYNTH-1K (CC-BY)
 make eval             # run the benchmark, write results/*.json
 uv run python -m infradian.llm.eval          # the explanation-layer eval (12/12)
-uv run python -m pytest                       # leakage, causality, parity, privacy, API tests
+uv run python -m pytest                       # leakage, causality, parity, privacy, safety, API
 ```
 
 `make reproduce` runs the whole synthetic pipeline end to end. **None of it needs mcPHASES**: that is
@@ -92,6 +132,14 @@ The loader verifies file checksums against `configs/splits/mcphases_v1.json` and
 ```bash
 cd web && npm install && npm run build   # static export -> web/out (deploy anywhere)
 uv run make serve                         # optional FastAPI backend on :8000
+```
+
+Or the whole stack, frontend plus backend plus every multimodal route, in one command:
+
+```bash
+cp .env.example .env    # add OPENAI_API_KEY here if you want the model-backed paths
+docker compose up --build
+# web on :3000, API on :8000
 ```
 
 ---
